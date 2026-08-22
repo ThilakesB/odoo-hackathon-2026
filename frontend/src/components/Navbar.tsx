@@ -90,11 +90,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAIChat, onToggleMobileSide
 
           <Link to="/" className="flex items-center gap-2.5 group">
             <div className="w-9 h-9 rounded-xl bg-black text-white dark:bg-white dark:text-black flex items-center justify-center font-black text-lg shadow-sm group-hover:scale-105 transition-transform duration-300">
-              D
+              L
             </div>
             <div className="hidden sm:block">
               <span className="text-lg font-extrabold tracking-tight text-zinc-950 dark:text-white">
-                Dayflow
+                Libreo
               </span>
               <span className="text-[10px] block font-semibold text-zinc-400 dark:text-zinc-500 -mt-1 tracking-wider uppercase">
                 HRMS Core

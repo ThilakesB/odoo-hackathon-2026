@@ -49,14 +49,14 @@ export const RegisterPage: React.FC = () => {
     <div className="min-h-screen w-full flex items-center justify-center p-4 sm:p-6 bg-slate-50 dark:bg-[#070b14] bg-mesh-glow relative overflow-hidden">
       <div className="w-full max-w-lg relative z-10 space-y-6">
         <div className="text-center space-y-2">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-tr from-brand-600 via-brand-500 to-indigo-600 text-white font-black text-xl shadow-xl shadow-brand-500/30 mb-1">
-            D
+          <div className="inline-flex w-12 h-12 rounded-2xl bg-black text-white dark:bg-white dark:text-black items-center justify-center font-black text-2xl shadow-sm mb-1">
+            L
           </div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-            Create Dayflow Account
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-zinc-950 dark:text-white">
+            Create Libreo Account
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400">
-            Join your organization workspace on Dayflow
+          <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 font-medium">
+            Join your organization workspace on Libreo
           </p>
         </div>
 

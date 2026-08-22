@@ -17,7 +17,7 @@ export const AICopilotModal: React.FC<AICopilotModalProps> = ({ isOpen, onClose,
     {
       id: 'welcome',
       sender: 'assistant',
-      text: 'Hello! I am your **Dayflow AI Copilot**. How can I help you today? You can ask about your remaining leaves, check your salary breakdown, or apply for leave in natural language.',
+      text: 'Hello! I am your **Libreo AI Copilot**. How can I help you today? You can ask about your remaining leaves, check your salary breakdown, or apply for leave in natural language.',
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     },
   ]);
@@ -103,7 +103,7 @@ export const AICopilotModal: React.FC<AICopilotModalProps> = ({ isOpen, onClose,
             </div>
             <div>
               <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                Dayflow AI Copilot
+                Libreo AI Copilot
                 <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-semibold">
                   Online
                 </span>

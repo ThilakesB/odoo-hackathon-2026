@@ -56,16 +56,16 @@ export const LoginPage: React.FC = () => {
       <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none animate-float [animation-delay:2s]" />
 
       <div className="w-full max-w-md relative z-10 space-y-6">
-        {/* Brand Header */}
+        {/* Logo & Headline */}
         <div className="text-center space-y-2">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-tr from-brand-600 via-brand-500 to-indigo-600 text-white font-black text-2xl shadow-xl shadow-brand-500/30 mb-2">
-            D
+          <div className="inline-flex w-12 h-12 rounded-2xl bg-black text-white dark:bg-white dark:text-black items-center justify-center font-black text-2xl shadow-sm mb-1">
+            L
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-            Welcome to Dayflow
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-zinc-950 dark:text-white">
+            Welcome to Libreo
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">
-            Every Workday, Perfectly Aligned
+          <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 font-medium">
+            Every Workday, Perfectly Aligned. Sign in to your workspace.
           </p>
         </div>
 

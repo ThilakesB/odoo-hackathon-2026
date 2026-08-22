@@ -92,7 +92,7 @@ export const EmployeeDashboard: React.FC<EmployeeDashboardProps> = ({ onOpenAICh
             className="btn-primary text-xs px-4 py-2.5 flex items-center gap-2"
           >
             <Sparkles className="w-4 h-4" />
-            <span>Ask Dayflow AI</span>
+            <span>Ask Libreo AI</span>
           </button>
         </div>
       </div>
