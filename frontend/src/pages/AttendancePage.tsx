@@ -114,9 +114,9 @@ export const AttendancePage: React.FC = () => {
 
         <button
           onClick={exportCSV}
-          className="btn-secondary text-xs px-4 py-2.5 flex items-center gap-2 self-start sm:self-auto"
+          className="btn-secondary text-xs px-4 py-2.5 flex items-center gap-2 self-start sm:self-auto font-semibold"
         >
-          <Download className="w-4 h-4 text-slate-500" />
+          <Download className="w-4 h-4 text-zinc-700 dark:text-zinc-300" />
           <span>Export CSV Report</span>
         </button>
       </div>
@@ -135,17 +135,17 @@ export const AttendancePage: React.FC = () => {
               placeholder={isAdmin ? "Search employee name, ID, department..." : "Filter records..."}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 rounded-xl text-xs bg-slate-100 dark:bg-slate-800/80 border border-transparent focus:border-brand-500 text-slate-900 dark:text-white focus:outline-none"
+              className="w-full pl-9 pr-3 py-2 rounded-xl text-xs bg-slate-100 dark:bg-slate-800/80 border border-transparent focus:border-zinc-400 text-slate-900 dark:text-white focus:outline-none"
             />
           </div>
 
           {/* View Toggles & Status Select */}
           <div className="flex flex-wrap items-center gap-2">
-            <div className="flex items-center p-1 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs font-semibold">
+            <div className="flex items-center p-1 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs font-semibold border border-slate-200 dark:border-slate-700">
               <button
                 onClick={() => setViewMode('all')}
                 className={`px-3 py-1.5 rounded-lg transition ${
-                  viewMode === 'all' ? 'bg-white dark:bg-slate-900 text-brand-600 dark:text-brand-400 shadow-sm' : 'text-slate-500'
+                  viewMode === 'all' ? 'bg-black text-white dark:bg-white dark:text-black shadow-sm' : 'text-slate-500 hover:text-zinc-900 dark:hover:text-white'
                 }`}
               >
                 All Records
@@ -153,7 +153,7 @@ export const AttendancePage: React.FC = () => {
               <button
                 onClick={() => setViewMode('today')}
                 className={`px-3 py-1.5 rounded-lg transition ${
-                  viewMode === 'today' ? 'bg-white dark:bg-slate-900 text-brand-600 dark:text-brand-400 shadow-sm' : 'text-slate-500'
+                  viewMode === 'today' ? 'bg-black text-white dark:bg-white dark:text-black shadow-sm' : 'text-slate-500 hover:text-zinc-900 dark:hover:text-white'
                 }`}
               >
                 Today Only
@@ -163,7 +163,7 @@ export const AttendancePage: React.FC = () => {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-3 py-2 rounded-xl text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:border-brand-500"
+              className="px-3 py-2 rounded-xl text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:border-zinc-400"
             >
               <option value="all">All Statuses</option>
               <option value="present">Present</option>

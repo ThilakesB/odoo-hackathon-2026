@@ -141,20 +141,20 @@ export const EmployeeDashboard: React.FC<EmployeeDashboardProps> = ({ onOpenAICh
         <div className="lg:col-span-2 space-y-6">
           {/* Leave Quota & Recent Requests */}
           <GlassCard>
-            <div className="flex items-center justify-between pb-4 border-b border-slate-200/80 dark:border-slate-800">
+            <div className="flex items-center justify-between pb-4 border-b border-zinc-200 dark:border-zinc-800">
               <div className="flex items-center gap-2">
-                <div className="p-2 rounded-xl bg-brand-500/10 text-brand-600 dark:text-brand-400">
+                <div className="p-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100">
                   <CalendarDays className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-slate-900 dark:text-white">Leave Balance & Requests</h3>
-                  <p className="text-xs text-slate-500">Your live vacation quotas and status history</p>
+                  <h3 className="text-sm font-bold text-zinc-950 dark:text-white">Leave Balance & Requests</h3>
+                  <p className="text-xs text-zinc-500">Your live vacation quotas and status history</p>
                 </div>
               </div>
 
               <Link
                 to="/leave"
-                className="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:underline inline-flex items-center gap-1"
+                className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 hover:underline inline-flex items-center gap-1"
               >
                 <span>View All</span>
                 <ChevronRight className="w-3.5 h-3.5" />
@@ -163,33 +163,33 @@ export const EmployeeDashboard: React.FC<EmployeeDashboardProps> = ({ onOpenAICh
 
             {/* Leave Balance Meters */}
             <div className="grid grid-cols-3 gap-3 my-4">
-              <div className="p-3.5 rounded-2xl bg-slate-50/80 dark:bg-slate-800/40 border border-slate-200/60 dark:border-slate-800">
-                <span className="text-[11px] font-bold uppercase text-slate-400 block">Annual Paid</span>
+              <div className="p-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800">
+                <span className="text-[11px] font-bold uppercase text-zinc-400 block">Annual Paid</span>
                 <div className="flex items-baseline gap-1 mt-1">
-                  <span className="text-2xl font-extrabold text-brand-600 dark:text-brand-400">
+                  <span className="text-2xl font-extrabold text-zinc-900 dark:text-white">
                     {leaveBalances?.paid ?? 0}
                   </span>
-                  <span className="text-xs text-slate-400">days</span>
+                  <span className="text-xs text-zinc-400">days</span>
                 </div>
               </div>
 
-              <div className="p-3.5 rounded-2xl bg-slate-50/80 dark:bg-slate-800/40 border border-slate-200/60 dark:border-slate-800">
-                <span className="text-[11px] font-bold uppercase text-slate-400 block">Sick Leave</span>
+              <div className="p-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800">
+                <span className="text-[11px] font-bold uppercase text-zinc-400 block">Sick Leave</span>
                 <div className="flex items-baseline gap-1 mt-1">
-                  <span className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400">
+                  <span className="text-2xl font-extrabold text-zinc-900 dark:text-white">
                     {leaveBalances?.sick ?? 0}
                   </span>
-                  <span className="text-xs text-slate-400">days</span>
+                  <span className="text-xs text-zinc-400">days</span>
                 </div>
               </div>
 
-              <div className="p-3.5 rounded-2xl bg-slate-50/80 dark:bg-slate-800/40 border border-slate-200/60 dark:border-slate-800">
-                <span className="text-[11px] font-bold uppercase text-slate-400 block">Unpaid Leave</span>
+              <div className="p-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800">
+                <span className="text-[11px] font-bold uppercase text-zinc-400 block">Unpaid Leave</span>
                 <div className="flex items-baseline gap-1 mt-1">
-                  <span className="text-2xl font-extrabold text-amber-600 dark:text-amber-400">
+                  <span className="text-2xl font-extrabold text-zinc-900 dark:text-white">
                     {leaveBalances?.unpaid ?? 0}
                   </span>
-                  <span className="text-xs text-slate-400">days</span>
+                  <span className="text-xs text-zinc-400">days</span>
                 </div>
               </div>
             </div>

@@ -108,51 +108,51 @@ export const LeavePage: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <GlassCard className="flex items-center justify-between">
             <div className="space-y-1">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+              <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">
                 Paid Annual Leave
               </span>
               <div className="flex items-baseline gap-1.5">
-                <span className="text-3xl font-extrabold text-brand-600 dark:text-brand-400 font-mono">
+                <span className="text-3xl font-extrabold text-zinc-950 dark:text-white font-mono">
                   {balances.paid}
                 </span>
-                <span className="text-xs text-slate-400 font-medium">Days remaining</span>
+                <span className="text-xs text-zinc-400 font-medium">Days remaining</span>
               </div>
             </div>
-            <div className="p-3 rounded-2xl bg-brand-500/15 text-brand-600 dark:text-brand-400">
+            <div className="p-3 rounded-2xl bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100">
               <Palmtree className="w-6 h-6" />
             </div>
           </GlassCard>
 
           <GlassCard className="flex items-center justify-between">
             <div className="space-y-1">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+              <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">
                 Sick / Medical Leave
               </span>
               <div className="flex items-baseline gap-1.5">
-                <span className="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400 font-mono">
+                <span className="text-3xl font-extrabold text-zinc-950 dark:text-white font-mono">
                   {balances.sick}
                 </span>
-                <span className="text-xs text-slate-400 font-medium">Days remaining</span>
+                <span className="text-xs text-zinc-400 font-medium">Days remaining</span>
               </div>
             </div>
-            <div className="p-3 rounded-2xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">
+            <div className="p-3 rounded-2xl bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100">
               <Stethoscope className="w-6 h-6" />
             </div>
           </GlassCard>
 
           <GlassCard className="flex items-center justify-between">
             <div className="space-y-1">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+              <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">
                 Unpaid Time Off
               </span>
               <div className="flex items-baseline gap-1.5">
-                <span className="text-3xl font-extrabold text-amber-600 dark:text-amber-400 font-mono">
+                <span className="text-3xl font-extrabold text-zinc-950 dark:text-white font-mono">
                   {balances.unpaid}
                 </span>
-                <span className="text-xs text-slate-400 font-medium">Days available</span>
+                <span className="text-xs text-zinc-400 font-medium">Days available</span>
               </div>
             </div>
-            <div className="p-3 rounded-2xl bg-amber-500/15 text-amber-600 dark:text-amber-400">
+            <div className="p-3 rounded-2xl bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100">
               <HelpCircle className="w-6 h-6" />
             </div>
           </GlassCard>
@@ -168,8 +168,8 @@ export const LeavePage: React.FC = () => {
               onClick={() => setStatusFilter(f)}
               className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold uppercase tracking-wider transition ${
                 statusFilter === f
-                  ? 'bg-brand-600 text-white shadow-md shadow-brand-500/25'
-                  : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  ? 'bg-black text-white dark:bg-white dark:text-black shadow-sm'
+                  : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'
               }`}
             >
               {f === 'all' ? 'All Requests' : f}
