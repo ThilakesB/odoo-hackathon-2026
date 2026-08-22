@@ -153,6 +153,74 @@ def verify_otp(req: schemas.VerifyOTPRequest, db: Session = Depends(get_db)):
     }
 
 # -------------------------------------------------------------
+# 3. Google OAuth & Firebase Single Sign-On
+# -------------------------------------------------------------
+@router.post("/google", response_model=schemas.Token)
+def google_auth(req: schemas.GoogleAuthRequest, db: Session = Depends(get_db)):
+    """
+    Accepts verified Google User profile from Firebase Client SDK,
+    finds or auto-provisions user + employee record, and issues JWT access token.
+    """
+    email_clean = req.email.strip().lower()
+
+    user = db.query(models.User).filter(models.User.email == email_clean).first()
+    if not user:
+        # Auto-create user
+        formatted_name = req.name or email_clean.split("@")[0].replace(".", " ").title()
+        generated_emp_id = f"DF-G-{random.randint(1000, 9999)}"
+
+        user = models.User(
+            employee_id=generated_emp_id,
+            name=formatted_name,
+            email=email_clean,
+            password_hash=get_password_hash("GoogleAuth@2026"),
+            role="employee",
+            is_verified=True,
+            avatar_url=req.photo_url or f"https://api.dicebear.com/7.x/avataaars/svg?seed={formatted_name}"
+        )
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+
+        # Create linked employee record
+        emp_profile = models.Employee(
+            user_id=user.id,
+            department="Engineering",
+            designation="Specialist",
+            joining_date=date.today(),
+            work_location="Hybrid",
+            profile_picture=user.avatar_url
+        )
+        db.add(emp_profile)
+
+        # Welcome notification
+        welcome_notif = models.Notification(
+            employee_id=emp_profile.id,
+            title="Signed in with Google ✨",
+            message="Welcome to Dayflow HRMS! Your account has been verified through Google Sign-In.",
+            type="success"
+        )
+        db.add(welcome_notif)
+        db.commit()
+    else:
+        if req.photo_url and not user.avatar_url:
+            user.avatar_url = req.photo_url
+        user.is_verified = True
+        db.commit()
+
+    access_token = create_access_token(data={"sub": user.email, "role": user.role})
+
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "role": user.role,
+        "user_id": user.id,
+        "employee_id": user.employee_id,
+        "name": user.name,
+        "email": user.email
+    }
+
+# -------------------------------------------------------------
 # 3. Registration with Password Security & Email Verification
 # -------------------------------------------------------------
 @router.post("/send-verification-code")

@@ -11,6 +11,7 @@ interface AuthContextType {
   isLoading: boolean;
   login: (credentials: { email: string; password: string }) => Promise<void>;
   loginWithOtp: (data: { email: string; otp: string }) => Promise<void>;
+  loginWithGoogle: (data: { id_token?: string; email: string; name?: string; photo_url?: string }) => Promise<void>;
   register: (data: any) => Promise<void>;
   logout: () => void;
   refreshProfile: () => Promise<void>;
@@ -115,6 +116,39 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const loginWithGoogle = async (googleUser: { id_token?: string; email: string; name?: string; photo_url?: string }) => {
+    setIsLoading(true);
+    try {
+      const data = await authService.googleLogin(googleUser);
+      // TODO: Migrate to httpOnly cookie storage once backend supports cookie-based session tokens
+      localStorage.setItem('dayflow_token', data.access_token);
+      setToken(data.access_token);
+      
+      const uData: User = {
+        id: data.user_id,
+        employee_id: data.employee_id,
+        name: data.name,
+        email: data.email,
+        role: data.role as Role,
+        avatar_url: googleUser.photo_url,
+        is_verified: true,
+        created_at: new Date().toISOString()
+      };
+      setUser(uData);
+      localStorage.setItem('dayflow_user', JSON.stringify(uData));
+
+      // Refresh profile
+      try {
+        const pData = await employeeService.getMyProfile();
+        setProfile(pData);
+      } catch (e) {
+        console.warn('Initial profile load warning:', e);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const register = async (data: any) => {
     setIsLoading(true);
     try {
@@ -179,6 +213,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isLoading,
         login,
         loginWithOtp,
+        loginWithGoogle,
         register,
         logout,
         refreshProfile

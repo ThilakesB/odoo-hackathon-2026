@@ -36,6 +36,12 @@ class OTPResponse(BaseModel):
     cooldown_seconds: Optional[int] = 60
     code_preview: Optional[str] = None
 
+class GoogleAuthRequest(BaseModel):
+    id_token: Optional[str] = None
+    email: EmailStr
+    name: Optional[str] = "Google User"
+    photo_url: Optional[str] = None
+
 class UserRegister(BaseModel):
     employee_id: str = Field(..., example="EMP-1001")
     name: str = Field(..., example="Alex Rivera")

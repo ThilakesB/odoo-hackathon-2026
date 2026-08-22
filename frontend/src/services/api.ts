@@ -75,6 +75,10 @@ export const authService = {
     const res = await api.post('/auth/verify-otp', { email, otp });
     return res.data;
   },
+  googleLogin: async (data: { id_token?: string; email: string; name?: string; photo_url?: string }) => {
+    const res = await api.post('/auth/google', data);
+    return res.data;
+  },
   getCurrentUser: async (): Promise<User> => {
     const res = await api.get('/auth/me');
     return res.data;
