@@ -132,30 +132,18 @@ export const LoginPage: React.FC = () => {
           <div className="mt-6 pt-5 border-t border-slate-200/80 dark:border-slate-800/80 space-y-2.5">
             <div className="flex items-center justify-center gap-1.5 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
               <Sparkles className="w-3.5 h-3.5 text-brand-500" />
-              <span>One-Click Demo Access</span>
+              <span>One-Click Admin Access</span>
             </div>
 
-            <div className="grid grid-cols-2 gap-2.5">
-              <button
-                type="button"
-                onClick={() => handleDemoLogin('admin')}
-                disabled={loading}
-                className="px-3 py-2 rounded-xl text-xs font-semibold bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center gap-1.5 transition active:scale-95"
-              >
-                <Shield className="w-3.5 h-3.5" />
-                <span>HR Admin Demo</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleDemoLogin('employee')}
-                disabled={loading}
-                className="px-3 py-2 rounded-xl text-xs font-semibold bg-brand-500/10 hover:bg-brand-500/20 border border-brand-500/20 text-brand-600 dark:text-brand-400 flex items-center justify-center gap-1.5 transition active:scale-95"
-              >
-                <UserCheck className="w-3.5 h-3.5" />
-                <span>Employee Demo</span>
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={() => handleDemoLogin('admin')}
+              disabled={loading}
+              className="w-full px-4 py-2.5 rounded-xl text-xs font-semibold bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center gap-1.5 transition active:scale-95 shadow-sm"
+            >
+              <Shield className="w-3.5 h-3.5" />
+              <span>Instant HR Admin Demo (admin@dayflow.io)</span>
+            </button>
           </div>
         </GlassCard>
 
