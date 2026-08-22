@@ -23,8 +23,9 @@ __pycache__/
 *$py.class
 .pytest_cache/
 
-# Frontend Build Output
+# Frontend Build Output & Cache
 frontend/dist/
+frontend/.vite/
 dist/
 build/
 
