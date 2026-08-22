@@ -9,13 +9,13 @@ def seed_database():
     
     db = SessionLocal()
     try:
-        print("Seeding Libreo HRMS Database with custom organization users...")
+        print("Seeding Dayflow HRMS Database with custom organization users...")
 
-        # 1. HR Admin: thilskeb@gmail.com / admin@123
+        # 1. HR Admin: thilakesb@gmail.com / admin@123
         admin_user = models.User(
             employee_id="LIB-ADMIN-01",
             name="Thilakeswaran (HR Admin)",
-            email="thilskeb@gmail.com",
+            email="thilakesb@gmail.com",
             password_hash=get_password_hash("admin@123"),
             role="admin",
             is_verified=True,
@@ -118,32 +118,16 @@ def seed_database():
             # Notification welcome
             n = models.Notification(
                 employee_id=emp.id,
-                title="Welcome to Libreo ✨",
-                message=f"Hi {item['name']}, your Libreo HRMS account is active. You can track attendance, apply leaves, and view payslips anytime.",
+                title="Welcome to Dayflow ✨",
+                message=f"Hi {item['name']}, your Dayflow HRMS account is active. You can track attendance, apply leaves, and view payslips anytime.",
                 type="success"
             )
             db.add(n)
 
-            # Initial payroll record
-            net = item["salary"] + item["allowance"] - item["deduction"] - item["tax"]
-            pay = models.Payroll(
-                employee_id=emp.id,
-                month=date.today().strftime("%B"),
-                year=date.today().year,
-                basic_salary=item["salary"],
-                allowances=item["allowance"],
-                deductions=item["deduction"],
-                tax=item["tax"],
-                net_salary=round(net, 2),
-                payment_status="paid",
-                payment_date=date.today()
-            )
-            db.add(pay)
-
         db.commit()
 
-        print("Libreo Database initialized successfully with bcrypt hashed credentials:")
-        print("   1. HR Admin:   thilskeb@gmail.com  |  admin@123")
+        print("Dayflow Database initialized successfully with bcrypt hashed credentials:")
+        print("   1. HR Admin:   thilakesb@gmail.com  |  admin@123")
         print("   2. Employee 1: sanjai@gmail.com    |  sanjai@2006")
         print("   3. Employee 2: santhiya@gmail.com  |  Santhiya@2006")
         print("   4. Employee 3: preevena@gmail.com  |  Prevvena@2006")

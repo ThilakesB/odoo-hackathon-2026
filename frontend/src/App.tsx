@@ -26,7 +26,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode; adminOnly?: boolean 
       <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-[#070b14]">
         <div className="flex flex-col items-center gap-3">
           <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-brand-600 to-indigo-600 animate-spin" />
-          <p className="text-xs font-semibold text-zinc-500">Loading Libreo Workspace...</p>
+          <p className="text-xs font-semibold text-zinc-500">Loading Dayflow Workspace...</p>
         </div>
       </div>
     );

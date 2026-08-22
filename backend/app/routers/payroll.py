@@ -114,7 +114,7 @@ def create_payroll(
     notif = models.Notification(
         employee_id=emp.id,
         title="Payslip Generated 💵",
-        message=f"Your payslip for {data.month} {data.year} (Net: ${net_sal:,.2f}) is now available in your portal.",
+        message=f"Your payslip for {data.month} {data.year} (Net: ₹{net_sal:,.2f}) is now available in your portal.",
         type="success"
     )
     db.add(notif)

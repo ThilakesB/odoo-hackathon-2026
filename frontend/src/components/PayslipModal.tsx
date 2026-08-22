@@ -57,11 +57,11 @@ export const PayslipModal: React.FC<PayslipModalProps> = ({ payroll, isOpen, onC
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-zinc-200 dark:border-zinc-800">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-2xl bg-black text-white dark:bg-white dark:text-black flex items-center justify-center font-black text-2xl shadow-sm">
-                L
+                D
               </div>
               <div>
                 <h2 className="text-xl font-extrabold tracking-tight text-zinc-950 dark:text-white">
-                  Libreo Technologies, Inc.
+                  Dayflow Technologies, Inc.
                 </h2>
                 <p className="text-xs text-zinc-500 font-mono">100 Pine Street, Suite 2400 • San Francisco, CA</p>
                 <span className="inline-block mt-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100">
@@ -107,24 +107,24 @@ export const PayslipModal: React.FC<PayslipModalProps> = ({ payroll, isOpen, onC
             <div className="space-y-2">
               <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-400 flex items-center justify-between pb-1 border-b border-zinc-200 dark:border-zinc-800">
                 <span>Earnings</span>
-                <span>Amount ($)</span>
+                <span>Amount (₹)</span>
               </h4>
               <div className="space-y-1.5 text-xs text-zinc-600 dark:text-zinc-300">
                 <div className="flex justify-between">
                   <span>Basic Salary</span>
-                  <span className="font-mono font-semibold">${payroll.basic_salary.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                  <span className="font-mono font-semibold">₹{payroll.basic_salary.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>House Rent Allowance (HRA)</span>
-                  <span className="font-mono font-semibold">${(payroll.allowances * 0.6).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                  <span className="font-mono font-semibold">₹{(payroll.allowances * 0.6).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Special & Medical Allowance</span>
-                  <span className="font-mono font-semibold">${(payroll.allowances * 0.4).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                  <span className="font-mono font-semibold">₹{(payroll.allowances * 0.4).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
                 </div>
                 <div className="pt-2 border-t border-zinc-200 dark:border-zinc-800 flex justify-between font-bold text-zinc-900 dark:text-white">
                   <span>Gross Earnings</span>
-                  <span className="font-mono">${(payroll.basic_salary + payroll.allowances).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                  <span className="font-mono">₹{(payroll.basic_salary + payroll.allowances).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
                 </div>
               </div>
             </div>
@@ -133,24 +133,24 @@ export const PayslipModal: React.FC<PayslipModalProps> = ({ payroll, isOpen, onC
             <div className="space-y-2">
               <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-400 flex items-center justify-between pb-1 border-b border-zinc-200 dark:border-zinc-800">
                 <span>Deductions & Taxes</span>
-                <span>Amount ($)</span>
+                <span>Amount (₹)</span>
               </h4>
               <div className="space-y-1.5 text-xs text-zinc-600 dark:text-zinc-300">
                 <div className="flex justify-between">
-                  <span>Provident Fund / 401(k)</span>
-                  <span className="font-mono font-semibold">${(payroll.deductions * 0.6).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                  <span>Provident Fund / PF</span>
+                  <span className="font-mono font-semibold">₹{(payroll.deductions * 0.6).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Health & Insurance</span>
-                  <span className="font-mono font-semibold">${(payroll.deductions * 0.4).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                  <span className="font-mono font-semibold">₹{(payroll.deductions * 0.4).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Federal & State Income Tax</span>
-                  <span className="font-mono font-semibold">${payroll.tax.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                  <span>Income Tax (TDS)</span>
+                  <span className="font-mono font-semibold">₹{payroll.tax.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
                 </div>
                 <div className="pt-2 border-t border-zinc-200 dark:border-zinc-800 flex justify-between font-bold text-zinc-900 dark:text-white">
                   <span>Total Deductions</span>
-                  <span className="font-mono">-${(payroll.deductions + payroll.tax).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                  <span className="font-mono">-₹{(payroll.deductions + payroll.tax).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
                 </div>
               </div>
             </div>
@@ -163,20 +163,20 @@ export const PayslipModal: React.FC<PayslipModalProps> = ({ payroll, isOpen, onC
                 Net Take-Home Pay
               </span>
               <span className="text-2xl sm:text-3xl font-extrabold font-mono tracking-tight">
-                ${payroll.net_salary.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                ₹{payroll.net_salary.toLocaleString(undefined, { minimumFractionDigits: 2 })}
               </span>
             </div>
             <div className="text-right">
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-zinc-800 text-white dark:bg-zinc-200 dark:text-black text-xs font-semibold">
                 <ShieldCheck className="w-4 h-4" />
-                <span>Verified by Libreo HRMS</span>
+                <span>Verified by Dayflow HRMS</span>
               </div>
             </div>
           </div>
 
           {/* Footer note */}
           <div className="text-center pt-2 text-[10px] text-zinc-400 border-t border-zinc-200 dark:border-zinc-800">
-            This is a computer-generated document verified by Libreo HRMS. No physical signature is required.
+            This is a computer-generated document verified by Dayflow HRMS. No physical signature is required.
           </div>
         </div>
       </div>

@@ -16,16 +16,37 @@ class TokenData(BaseModel):
     email: Optional[str] = None
     role: Optional[str] = None
 
+class VerificationRequest(BaseModel):
+    email: EmailStr
+
+class VerifyCodeRequest(BaseModel):
+    email: EmailStr
+    code: str
+
+class RequestOTPRequest(BaseModel):
+    email: EmailStr = Field(..., example="alex.rivera@dayflow.io")
+
+class VerifyOTPRequest(BaseModel):
+    email: EmailStr = Field(..., example="alex.rivera@dayflow.io")
+    otp: str = Field(..., min_length=6, max_length=6, example="123456")
+
+class OTPResponse(BaseModel):
+    status: str
+    message: str
+    cooldown_seconds: Optional[int] = 60
+    code_preview: Optional[str] = None
+
 class UserRegister(BaseModel):
     employee_id: str = Field(..., example="EMP-1001")
     name: str = Field(..., example="Alex Rivera")
     email: EmailStr = Field(..., example="alex.rivera@dayflow.io")
-    password: str = Field(..., min_length=6, example="secret123")
+    password: str = Field(..., min_length=8, example="Secret@2026")
     role: str = Field("employee", example="employee") # "employee" or "admin"
     department: Optional[str] = "Engineering"
     designation: Optional[str] = "Software Engineer"
     phone: Optional[str] = None
     address: Optional[str] = None
+    verification_code: Optional[str] = None
 
 class UserLogin(BaseModel):
     email: EmailStr = Field(..., example="alex.rivera@dayflow.io")
@@ -195,5 +216,6 @@ class AIChatRequest(BaseModel):
 
 class AIChatResponse(BaseModel):
     reply: str
+    sources: Optional[List[dict]] = []
     action_type: Optional[str] = None # "none", "leave_applied", "show_payroll", "show_attendance"
     action_payload: Optional[dict] = None

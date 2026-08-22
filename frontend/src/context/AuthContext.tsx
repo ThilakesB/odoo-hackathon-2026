@@ -10,6 +10,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (credentials: { email: string; password: string }) => Promise<void>;
+  loginWithOtp: (data: { email: string; otp: string }) => Promise<void>;
   register: (data: any) => Promise<void>;
   logout: () => void;
   refreshProfile: () => Promise<void>;
@@ -54,6 +55,39 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoading(true);
     try {
       const data = await authService.login(credentials);
+      // TODO: Migrate to httpOnly cookie storage once backend supports cookie-based session tokens
+      localStorage.setItem('dayflow_token', data.access_token);
+      setToken(data.access_token);
+      
+      const uData: User = {
+        id: data.user_id,
+        employee_id: data.employee_id,
+        name: data.name,
+        email: data.email,
+        role: data.role as Role,
+        is_verified: true,
+        created_at: new Date().toISOString()
+      };
+      setUser(uData);
+      localStorage.setItem('dayflow_user', JSON.stringify(uData));
+
+      // Refresh profile
+      try {
+        const pData = await employeeService.getMyProfile();
+        setProfile(pData);
+      } catch (e) {
+        console.warn('Initial profile load warning:', e);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const loginWithOtp = async (credentials: { email: string; otp: string }) => {
+    setIsLoading(true);
+    try {
+      const data = await authService.verifyOtp(credentials.email, credentials.otp);
+      // TODO: Migrate to httpOnly cookie storage once backend supports cookie-based session tokens
       localStorage.setItem('dayflow_token', data.access_token);
       setToken(data.access_token);
       
@@ -120,6 +154,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       try {
         const pData = await employeeService.getMyProfile();
         setProfile(pData);
+        if (pData?.profile_picture) {
+          setUser((prev) => {
+            if (!prev) return prev;
+            const updated = { ...prev, avatar_url: pData.profile_picture };
+            localStorage.setItem('dayflow_user', JSON.stringify(updated));
+            return updated;
+          });
+        }
       } catch (e) {
         console.error('Failed to refresh profile', e);
       }
@@ -136,6 +178,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isAuthenticated: !!token && !!user,
         isLoading,
         login,
+        loginWithOtp,
         register,
         logout,
         refreshProfile

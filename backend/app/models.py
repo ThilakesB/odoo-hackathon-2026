@@ -13,7 +13,7 @@ class User(Base):
     password_hash = Column(String(255), nullable=False)
     role = Column(String(20), default="employee")  # "employee" or "admin"
     is_verified = Column(Boolean, default=True)
-    avatar_url = Column(String(255), nullable=True)
+    avatar_url = Column(Text, nullable=True)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     # 1-to-1 relationship with Employee profile
@@ -29,7 +29,7 @@ class Employee(Base):
     joining_date = Column(Date, nullable=True)
     phone = Column(String(30), nullable=True)
     address = Column(Text, nullable=True)
-    profile_picture = Column(String(255), nullable=True)
+    profile_picture = Column(Text, nullable=True)
     emergency_contact = Column(String(100), nullable=True)
     work_location = Column(String(100), default="Remote / Hybrid")
     

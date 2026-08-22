@@ -170,7 +170,7 @@ export const AdminDashboard: React.FC = () => {
 
         <StatCard
           title="Monthly Payroll"
-          value={`$${(summary?.monthly_payroll_spend || 0).toLocaleString()}`}
+          value={`₹${(summary?.monthly_payroll_spend || 0).toLocaleString()}`}
           subtitle="Total net expenditure"
           icon={DollarSign}
           accentColor="brand"

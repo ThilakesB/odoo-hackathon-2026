@@ -93,6 +93,9 @@ def admin_update_employee(
 
     for field, value in emp_update.dict(exclude_unset=True).items():
         setattr(emp, field, value)
+    
+    if emp_update.profile_picture is not None and emp.user:
+        emp.user.avatar_url = emp_update.profile_picture
         
     db.commit()
     db.refresh(emp)

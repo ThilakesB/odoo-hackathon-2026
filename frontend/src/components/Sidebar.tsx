@@ -65,11 +65,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onCloseMobile, onO
           <div className="flex items-center justify-between px-2 pt-1">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-xl bg-black text-white dark:bg-white dark:text-black flex items-center justify-center font-black text-lg shadow-sm">
-                L
+                D
               </div>
               <div>
                 <h1 className="text-base font-extrabold tracking-tight text-zinc-950 dark:text-white">
-                  Libreo
+                  Dayflow
                 </h1>
                 <p className="text-[10px] font-semibold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">
                   {isAdmin ? 'HR Administration' : 'Workday Portal'}

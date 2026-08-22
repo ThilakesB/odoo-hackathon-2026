@@ -10,12 +10,15 @@ venv/
 .env.local
 *.env
 
-# SQLite Databases
+# SQLite Databases & Vector Stores
 *.db
 *.sqlite
 *.sqlite3
 dayflow.db
 backend/dayflow.db
+chroma_data/
+chroma_db/
+backend/chroma_data/
 
 # Python bytecode & cache
 __pycache__/

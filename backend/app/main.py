@@ -24,7 +24,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include Routers
+# Include Routers with /api prefix
 app.include_router(auth.router, prefix=settings.API_V1_STR)
 app.include_router(employees.router, prefix=settings.API_V1_STR)
 app.include_router(attendance.router, prefix=settings.API_V1_STR)
@@ -32,6 +32,15 @@ app.include_router(leave.router, prefix=settings.API_V1_STR)
 app.include_router(payroll.router, prefix=settings.API_V1_STR)
 app.include_router(analytics.router, prefix=settings.API_V1_STR)
 app.include_router(ai_assistant.router, prefix=settings.API_V1_STR)
+
+# Also register routers at root level for universal compatibility
+app.include_router(auth.router)
+app.include_router(employees.router)
+app.include_router(attendance.router)
+app.include_router(leave.router)
+app.include_router(payroll.router)
+app.include_router(analytics.router)
+app.include_router(ai_assistant.router)
 
 @app.get("/")
 def root():

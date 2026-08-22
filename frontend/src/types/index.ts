@@ -130,6 +130,13 @@ export interface AIChatMessage {
   sender: 'user' | 'assistant';
   text: string;
   timestamp: string;
+  sources?: Array<{
+    title: string;
+    category?: string;
+    text?: string;
+    source?: string;
+    score?: number;
+  }>;
   action_type?: string;
   action_payload?: any;
 }

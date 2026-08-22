@@ -185,7 +185,14 @@ def get_attendance(
     if status_filter and status_filter != "all":
         query = query.filter(models.Attendance.status == status_filter)
 
-    records = query.order_by(models.Attendance.date.desc()).limit(100).all()
+    if year and month:
+        from sqlalchemy import extract
+        query = query.filter(
+            extract('year', models.Attendance.date) == year,
+            extract('month', models.Attendance.date) == month
+        )
+
+    records = query.order_by(models.Attendance.date.desc()).limit(2000).all()
 
     result = []
     for r in records:

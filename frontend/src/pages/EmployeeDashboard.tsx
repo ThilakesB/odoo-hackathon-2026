@@ -92,7 +92,7 @@ export const EmployeeDashboard: React.FC<EmployeeDashboardProps> = ({ onOpenAICh
             className="btn-primary text-xs px-4 py-2.5 flex items-center gap-2"
           >
             <Sparkles className="w-4 h-4" />
-            <span>Ask Libreo AI</span>
+            <span>Ask Dayflow AI</span>
           </button>
         </div>
       </div>
@@ -120,7 +120,7 @@ export const EmployeeDashboard: React.FC<EmployeeDashboardProps> = ({ onOpenAICh
 
         <StatCard
           title="Latest Net Salary"
-          value={latestPayroll ? `$${latestPayroll.net_salary.toLocaleString()}` : '$0.00'}
+          value={latestPayroll ? `₹${latestPayroll.net_salary.toLocaleString()}` : '₹0.00'}
           subtitle={latestPayroll ? `${latestPayroll.month} ${latestPayroll.year} Disbursed` : 'No records yet'}
           icon={CreditCard}
           accentColor="indigo"
@@ -263,28 +263,28 @@ export const EmployeeDashboard: React.FC<EmployeeDashboardProps> = ({ onOpenAICh
                 <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40">
                   <span className="text-slate-400 block text-[10px] uppercase font-bold">Basic Pay</span>
                   <span className="text-sm font-bold text-slate-900 dark:text-white">
-                    ${latestPayroll.basic_salary.toLocaleString()}
+                    ₹{latestPayroll.basic_salary.toLocaleString()}
                   </span>
                 </div>
 
                 <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40">
                   <span className="text-slate-400 block text-[10px] uppercase font-bold">Allowances</span>
                   <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">
-                    +${latestPayroll.allowances.toLocaleString()}
+                    +₹{latestPayroll.allowances.toLocaleString()}
                   </span>
                 </div>
 
                 <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40">
                   <span className="text-slate-400 block text-[10px] uppercase font-bold">Deductions</span>
                   <span className="text-sm font-bold text-rose-600 dark:text-rose-400">
-                    -${(latestPayroll.deductions + latestPayroll.tax).toLocaleString()}
+                    -₹{(latestPayroll.deductions + latestPayroll.tax).toLocaleString()}
                   </span>
                 </div>
 
                 <div className="p-3 rounded-xl bg-brand-500/10 border border-brand-500/20">
                   <span className="text-brand-600 dark:text-brand-400 block text-[10px] uppercase font-bold">Take Home Net</span>
                   <span className="text-sm font-extrabold text-brand-600 dark:text-brand-400">
-                    ${latestPayroll.net_salary.toLocaleString()}
+                    ₹{latestPayroll.net_salary.toLocaleString()}
                   </span>
                 </div>
               </div>

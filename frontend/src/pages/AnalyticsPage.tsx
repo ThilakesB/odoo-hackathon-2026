@@ -68,7 +68,7 @@ export const AnalyticsPage: React.FC = () => {
     const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(reportData, null, 2));
     const downloadAnchor = document.createElement('a');
     downloadAnchor.setAttribute('href', dataStr);
-    downloadAnchor.setAttribute('download', `Libreo_Executive_Report_${new Date().toISOString().split('T')[0]}.json`);
+    downloadAnchor.setAttribute('download', `Dayflow_Executive_Report_${new Date().toISOString().split('T')[0]}.json`);
     document.body.appendChild(downloadAnchor);
     downloadAnchor.click();
     downloadAnchor.remove();
@@ -255,9 +255,9 @@ export const AnalyticsPage: React.FC = () => {
               <BarChart data={payrolls} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.08)" vertical={false} />
                 <XAxis dataKey="month" stroke="#71717a" fontSize={11} tickLine={false} />
-                <YAxis stroke="#71717a" fontSize={11} tickLine={false} tickFormatter={(val) => `$${val / 1000}k`} />
+                <YAxis stroke="#71717a" fontSize={11} tickLine={false} tickFormatter={(val) => `₹${val / 1000}k`} />
                 <Tooltip
-                  formatter={(val: any) => [`$${Number(val).toLocaleString()}`, '']}
+                  formatter={(val: any) => [`₹${Number(val).toLocaleString()}`, '']}
                   contentStyle={{
                     backgroundColor: '#09090b',
                     borderRadius: '12px',
@@ -271,8 +271,8 @@ export const AnalyticsPage: React.FC = () => {
                   iconType="circle"
                   formatter={(val) => <span className="text-xs text-zinc-400 capitalize">{val}</span>}
                 />
-                <Bar dataKey="total" fill="#ffffff" radius={[6, 6, 0, 0]} name="Net Paid ($)" />
-                <Bar dataKey="tax" fill="#71717a" radius={[6, 6, 0, 0]} name="Taxes ($)" />
+                <Bar dataKey="total" fill="#ffffff" radius={[6, 6, 0, 0]} name="Net Paid (₹)" />
+                <Bar dataKey="tax" fill="#71717a" radius={[6, 6, 0, 0]} name="Taxes (₹)" />
               </BarChart>
             </ResponsiveContainer>
           </div>

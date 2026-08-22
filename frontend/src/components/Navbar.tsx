@@ -1,9 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useTheme } from '../context/ThemeContext';
 import {
-  Sun,
-  Moon,
   Bell,
   Sparkles,
   Search,
@@ -25,7 +22,6 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ onOpenAIChat, onToggleMobileSidebar }) => {
   const { user, profile, logout } = useAuth();
-  const { theme, toggleTheme } = useTheme();
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [showNotifDropdown, setShowNotifDropdown] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -90,11 +86,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAIChat, onToggleMobileSide
 
           <Link to="/" className="flex items-center gap-2.5 group">
             <div className="w-9 h-9 rounded-xl bg-black text-white dark:bg-white dark:text-black flex items-center justify-center font-black text-lg shadow-sm group-hover:scale-105 transition-transform duration-300">
-              L
+              D
             </div>
             <div className="hidden sm:block">
               <span className="text-lg font-extrabold tracking-tight text-zinc-950 dark:text-white">
-                Libreo
+                Dayflow
               </span>
               <span className="text-[10px] block font-semibold text-zinc-400 dark:text-zinc-500 -mt-1 tracking-wider uppercase">
                 HRMS Core
@@ -123,15 +119,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAIChat, onToggleMobileSide
             <Sparkles className="w-3.5 h-3.5 animate-pulse" />
             <span className="hidden sm:inline">Ask AI HR</span>
             <span className="inline sm:hidden">AI</span>
-          </button>
-
-          {/* Theme Switcher */}
-          <button
-            onClick={toggleTheme}
-            aria-label="Toggle Theme"
-            className="p-2 rounded-xl text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition"
-          >
-            {theme === 'dark' ? <Sun className="w-4 h-4 text-white" /> : <Moon className="w-4 h-4 text-black" />}
           </button>
 
           {/* Notification Center */}
