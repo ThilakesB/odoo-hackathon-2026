@@ -77,26 +77,26 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAIChat, onToggleMobileSide
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full px-4 lg:px-8 py-3.5 backdrop-blur-xl bg-white/85 dark:bg-slate-900/90 border-b border-slate-200/80 dark:border-white/10 transition-colors">
+    <header className="sticky top-0 z-40 w-full px-4 lg:px-8 py-3.5 backdrop-blur-xl bg-white/90 dark:bg-black/90 border-b border-zinc-200/90 dark:border-zinc-800 transition-colors">
       <div className="flex items-center justify-between gap-4">
         {/* Mobile menu trigger + App Logo */}
         <div className="flex items-center gap-3">
           <button
             onClick={onToggleMobileSidebar}
-            className="lg:hidden p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+            className="lg:hidden p-2 rounded-xl text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition"
           >
             <Menu className="w-5 h-5" />
           </button>
 
           <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center text-white font-black text-lg shadow-md shadow-brand-500/25 group-hover:scale-105 transition-transform duration-300">
+            <div className="w-9 h-9 rounded-xl bg-black text-white dark:bg-white dark:text-black flex items-center justify-center font-black text-lg shadow-sm group-hover:scale-105 transition-transform duration-300">
               D
             </div>
             <div className="hidden sm:block">
-              <span className="text-lg font-bold tracking-tight bg-gradient-to-r from-slate-900 via-brand-700 to-indigo-600 dark:from-white dark:via-brand-300 dark:to-indigo-300 bg-clip-text text-transparent">
+              <span className="text-lg font-extrabold tracking-tight text-zinc-950 dark:text-white">
                 Dayflow
               </span>
-              <span className="text-[10px] block font-semibold text-slate-400 dark:text-slate-500 -mt-1 tracking-wider uppercase">
+              <span className="text-[10px] block font-semibold text-zinc-400 dark:text-zinc-500 -mt-1 tracking-wider uppercase">
                 HRMS Core
               </span>
             </div>
@@ -105,11 +105,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAIChat, onToggleMobileSide
 
         {/* Center Search / Workspace status */}
         <div className="hidden md:flex items-center max-w-xs lg:max-w-md w-full relative">
-          <Search className="w-4 h-4 absolute left-3.5 text-slate-400 pointer-events-none" />
+          <Search className="w-4 h-4 absolute left-3.5 text-zinc-400 pointer-events-none" />
           <input
             type="text"
             placeholder="Search employees, policies, teams..."
-            className="w-full pl-9 pr-4 py-1.5 text-xs rounded-xl bg-slate-100/80 dark:bg-slate-800/80 border border-transparent focus:border-brand-500/50 focus:bg-white dark:focus:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none transition-all"
+            className="w-full pl-9 pr-4 py-1.5 text-xs rounded-xl bg-zinc-100 dark:bg-zinc-900/90 border border-zinc-200 dark:border-zinc-800 focus:border-zinc-400 focus:bg-white dark:focus:bg-zinc-950 text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none transition-all"
           />
         </div>
 
@@ -118,9 +118,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAIChat, onToggleMobileSide
           {/* AI HR Copilot Action Pill */}
           <button
             onClick={onOpenAIChat}
-            className="group relative inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold text-white bg-gradient-to-r from-brand-600 via-indigo-600 to-purple-600 hover:from-brand-500 hover:to-purple-500 shadow-md shadow-indigo-500/20 active:scale-95 transition-all overflow-hidden"
+            className="group relative inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold text-white bg-zinc-900 hover:bg-black dark:text-black dark:bg-zinc-100 dark:hover:bg-white border border-zinc-800 dark:border-zinc-200 shadow-sm active:scale-95 transition-all overflow-hidden"
           >
-            <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
             <Sparkles className="w-3.5 h-3.5 animate-pulse" />
             <span className="hidden sm:inline">Ask AI HR</span>
             <span className="inline sm:hidden">AI</span>
@@ -130,9 +129,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAIChat, onToggleMobileSide
           <button
             onClick={toggleTheme}
             aria-label="Toggle Theme"
-            className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+            className="p-2 rounded-xl text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition"
           >
-            {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-600" />}
+            {theme === 'dark' ? <Sun className="w-4 h-4 text-white" /> : <Moon className="w-4 h-4 text-black" />}
           </button>
 
           {/* Notification Center */}
@@ -142,11 +141,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAIChat, onToggleMobileSide
                 setShowNotifDropdown(!showNotifDropdown);
                 setShowUserMenu(false);
               }}
-              className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition relative"
+              className="p-2 rounded-xl text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition relative"
             >
               <Bell className="w-4 h-4" />
               {unreadCount > 0 && (
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full ring-2 ring-white dark:ring-slate-900 animate-pulse" />
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-black dark:bg-white rounded-full ring-2 ring-white dark:ring-black animate-pulse" />
               )}
             </button>
 

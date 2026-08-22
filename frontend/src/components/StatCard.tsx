@@ -16,28 +16,28 @@ interface StatCardProps {
 
 const colorMap = {
   brand: {
-    iconBg: 'bg-brand-500/15 text-brand-600 dark:text-brand-400 border border-brand-500/20',
-    accentDot: 'bg-brand-500',
+    iconBg: 'bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100 border border-zinc-200 dark:border-zinc-700',
+    accentDot: 'bg-zinc-900 dark:bg-white',
   },
   indigo: {
-    iconBg: 'bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20',
-    accentDot: 'bg-indigo-500',
+    iconBg: 'bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100 border border-zinc-200 dark:border-zinc-700',
+    accentDot: 'bg-zinc-900 dark:bg-white',
   },
   emerald: {
-    iconBg: 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20',
-    accentDot: 'bg-emerald-500',
+    iconBg: 'bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100 border border-zinc-200 dark:border-zinc-700',
+    accentDot: 'bg-zinc-900 dark:bg-white',
   },
   amber: {
-    iconBg: 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/20',
-    accentDot: 'bg-amber-500',
+    iconBg: 'bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100 border border-zinc-200 dark:border-zinc-700',
+    accentDot: 'bg-zinc-900 dark:bg-white',
   },
   rose: {
-    iconBg: 'bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/20',
-    accentDot: 'bg-rose-500',
+    iconBg: 'bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100 border border-zinc-200 dark:border-zinc-700',
+    accentDot: 'bg-zinc-900 dark:bg-white',
   },
   purple: {
-    iconBg: 'bg-purple-500/15 text-purple-600 dark:text-purple-400 border border-purple-500/20',
-    accentDot: 'bg-purple-500',
+    iconBg: 'bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100 border border-zinc-200 dark:border-zinc-700',
+    accentDot: 'bg-zinc-900 dark:bg-white',
   },
 };
 
