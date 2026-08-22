@@ -31,30 +31,21 @@ export const LoginPage: React.FC = () => {
     }
   };
 
-  const handleDemoLogin = async (role: 'admin' | 'employee') => {
+  const handleCustomLogin = async (emailToUse: string, passToUse: string, targetPath: string) => {
     setLoading(true);
     setError(null);
     try {
-      if (role === 'admin') {
-        await login({ email: 'admin@dayflow.io', password: 'admin123' });
-        navigate('/admin');
-      } else {
-        await login({ email: 'alex.rivera@dayflow.io', password: 'employee123' });
-        navigate('/');
-      }
+      await login({ email: emailToUse, password: passToUse });
+      navigate(targetPath);
     } catch (err: any) {
-      setError(err.response?.data?.detail || 'Demo login failed');
+      setError(err.response?.data?.detail || 'Login failed');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center p-4 sm:p-6 bg-slate-50 dark:bg-[#070b14] bg-mesh-glow relative overflow-hidden">
-      {/* Decorative ambient glowing orbs */}
-      <div className="absolute top-1/4 -left-20 w-96 h-96 bg-brand-500/20 rounded-full blur-3xl pointer-events-none animate-float" />
-      <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none animate-float [animation-delay:2s]" />
-
+    <div className="min-h-screen w-full flex items-center justify-center p-4 sm:p-6 bg-white dark:bg-black bg-mesh-glow relative overflow-hidden">
       <div className="w-full max-w-md relative z-10 space-y-6">
         {/* Logo & Headline */}
         <div className="text-center space-y-2">
@@ -69,43 +60,40 @@ export const LoginPage: React.FC = () => {
           </p>
         </div>
 
-        {/* Login Glass Card */}
-        <GlassCard glow className="p-6 sm:p-8 backdrop-blur-3xl shadow-2xl">
+        {/* Login Card */}
+        <GlassCard className="p-6 sm:p-8 space-y-5">
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
-                Work Email
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+                Email Address
               </label>
               <div className="relative">
-                <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="name@company.com"
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl text-xs sm:text-sm bg-white/70 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition shadow-inner"
+                  placeholder="thilskeb@gmail.com"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl text-xs sm:text-sm bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 transition shadow-inner"
                   required
                 />
               </div>
             </div>
 
-            <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
                   Password
                 </label>
-                <a href="#" className="text-[11px] text-brand-600 dark:text-brand-400 font-medium hover:underline">
-                  Forgot password?
-                </a>
               </div>
               <div className="relative">
-                <Lock className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                <Lock className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl text-xs sm:text-sm bg-white/70 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition shadow-inner"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl text-xs sm:text-sm bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 transition shadow-inner"
                   required
                 />
               </div>
@@ -121,29 +109,66 @@ export const LoginPage: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full btn-primary py-3 text-xs sm:text-sm font-bold shadow-lg shadow-brand-500/25 flex items-center justify-center gap-2"
+              className="w-full btn-primary py-3 text-xs sm:text-sm font-bold flex items-center justify-center gap-2"
             >
               <span>{loading ? 'Authenticating...' : 'Sign In to Workspace'}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </form>
 
-          {/* 1-Click Demo Section */}
-          <div className="mt-6 pt-5 border-t border-slate-200/80 dark:border-slate-800/80 space-y-2.5">
-            <div className="flex items-center justify-center gap-1.5 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-              <Sparkles className="w-3.5 h-3.5 text-brand-500" />
-              <span>One-Click Admin Access</span>
+          {/* 1-Click Quick Login Section */}
+          <div className="mt-6 pt-5 border-t border-zinc-200 dark:border-zinc-800 space-y-2.5">
+            <div className="flex items-center justify-center gap-1.5 text-[11px] font-bold text-zinc-400 uppercase tracking-wider">
+              <Sparkles className="w-3.5 h-3.5 text-zinc-500" />
+              <span>1-Click User Access</span>
             </div>
 
+            {/* HR Admin Button */}
             <button
               type="button"
-              onClick={() => handleDemoLogin('admin')}
+              onClick={() => handleCustomLogin('thilskeb@gmail.com', 'admin@123', '/admin')}
               disabled={loading}
-              className="w-full px-4 py-2.5 rounded-xl text-xs font-semibold bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center gap-1.5 transition active:scale-95 shadow-sm"
+              className="w-full px-3 py-2 rounded-xl text-xs font-semibold bg-zinc-900 text-white hover:bg-black dark:bg-zinc-100 dark:text-black dark:hover:bg-white flex items-center justify-between transition active:scale-95 shadow-sm"
             >
-              <Shield className="w-3.5 h-3.5" />
-              <span>Instant HR Admin Demo (admin@dayflow.io)</span>
+              <div className="flex items-center gap-2">
+                <Shield className="w-3.5 h-3.5" />
+                <span>HR Admin (thilskeb@gmail.com)</span>
+              </div>
+              <span className="text-[10px] opacity-70 font-mono">admin@123</span>
             </button>
+
+            {/* Employee Quick Login Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              <button
+                type="button"
+                onClick={() => handleCustomLogin('sanjai@gmail.com', 'sanjai@2006', '/')}
+                disabled={loading}
+                className="px-2.5 py-2 rounded-xl text-xs font-medium bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-200 dark:hover:bg-zinc-800 text-zinc-900 dark:text-zinc-100 border border-zinc-200 dark:border-zinc-800 flex flex-col items-center gap-0.5 transition active:scale-95 text-center"
+              >
+                <span className="font-bold">Sanjai</span>
+                <span className="text-[10px] text-zinc-400 truncate max-w-full">sanjai@2006</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleCustomLogin('santhiya@gmail.com', 'Santhiya@2006', '/')}
+                disabled={loading}
+                className="px-2.5 py-2 rounded-xl text-xs font-medium bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-200 dark:hover:bg-zinc-800 text-zinc-900 dark:text-zinc-100 border border-zinc-200 dark:border-zinc-800 flex flex-col items-center gap-0.5 transition active:scale-95 text-center"
+              >
+                <span className="font-bold">Santhiya</span>
+                <span className="text-[10px] text-zinc-400 truncate max-w-full">Santhiya@2006</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleCustomLogin('preevena@gmail.com', 'Prevvena@2006', '/')}
+                disabled={loading}
+                className="px-2.5 py-2 rounded-xl text-xs font-medium bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-200 dark:hover:bg-zinc-800 text-zinc-900 dark:text-zinc-100 border border-zinc-200 dark:border-zinc-800 flex flex-col items-center gap-0.5 transition active:scale-95 text-center"
+              >
+                <span className="font-bold">Preevena</span>
+                <span className="text-[10px] text-zinc-400 truncate max-w-full">Prevvena@2006</span>
+              </button>
+            </div>
           </div>
         </GlassCard>
 
