@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import {
@@ -30,6 +30,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAIChat, onToggleMobileSide
   const [showNotifDropdown, setShowNotifDropdown] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
 
+  const notifRef = useRef<HTMLDivElement>(null);
+  const userMenuRef = useRef<HTMLDivElement>(null);
+
   const fetchNotifications = async () => {
     try {
       const data = await employeeService.getNotifications();
@@ -45,6 +48,21 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAIChat, onToggleMobileSide
     }
   }, [user]);
 
+  // Click outside listener to dismiss menus
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (notifRef.current && !notifRef.current.contains(event.target as Node)) {
+        setShowNotifDropdown(false);
+      }
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+        setShowUserMenu(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   const unreadCount = notifications.filter((n) => !n.is_read).length;
 
   const markAsRead = async (id: number) => {
@@ -59,7 +77,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAIChat, onToggleMobileSide
   };
 
   return (
-    <header className="sticky top-0 z-30 w-full px-4 lg:px-8 py-3.5 backdrop-blur-xl bg-white/70 dark:bg-slate-900/70 border-b border-slate-200/80 dark:border-white/10 transition-colors">
+    <header className="sticky top-0 z-40 w-full px-4 lg:px-8 py-3.5 backdrop-blur-xl bg-white/85 dark:bg-slate-900/90 border-b border-slate-200/80 dark:border-white/10 transition-colors">
       <div className="flex items-center justify-between gap-4">
         {/* Mobile menu trigger + App Logo */}
         <div className="flex items-center gap-3">
@@ -118,9 +136,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAIChat, onToggleMobileSide
           </button>
 
           {/* Notification Center */}
-          <div className="relative">
+          <div className="relative" ref={notifRef}>
             <button
-              onClick={() => setShowNotifDropdown(!showNotifDropdown)}
+              onClick={() => {
+                setShowNotifDropdown(!showNotifDropdown);
+                setShowUserMenu(false);
+              }}
               className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition relative"
             >
               <Bell className="w-4 h-4" />
@@ -130,8 +151,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAIChat, onToggleMobileSide
             </button>
 
             {showNotifDropdown && (
-              <div className="absolute right-0 mt-2 w-80 sm:w-96 rounded-2xl glass-card p-3 shadow-2xl z-50 animate-in fade-in slide-in-from-top-2 duration-200">
-                <div className="flex items-center justify-between px-2 py-1.5 border-b border-slate-200/60 dark:border-slate-800/80 mb-2">
+              <div className="absolute right-0 mt-2 w-80 sm:w-96 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-3 shadow-2xl z-50 ring-1 ring-black/10 dark:ring-white/10 animate-in fade-in slide-in-from-top-2 duration-150">
+                <div className="flex items-center justify-between px-2 py-1.5 border-b border-slate-200 dark:border-slate-800 mb-2">
                   <span className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
                     Notifications
                   </span>
@@ -150,8 +171,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAIChat, onToggleMobileSide
                         onClick={() => markAsRead(n.id)}
                         className={`p-2.5 rounded-xl text-xs cursor-pointer transition flex items-start justify-between gap-2 ${
                           n.is_read
-                            ? 'bg-slate-50/50 dark:bg-slate-800/30 text-slate-500'
-                            : 'bg-brand-500/10 dark:bg-brand-500/15 border border-brand-500/20 text-slate-800 dark:text-slate-200'
+                            ? 'bg-slate-50 dark:bg-slate-800/40 text-slate-500'
+                            : 'bg-brand-50 dark:bg-brand-950/40 border border-brand-500/20 text-slate-800 dark:text-slate-200'
                         }`}
                       >
                         <div className="space-y-0.5">
@@ -175,9 +196,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAIChat, onToggleMobileSide
           </div>
 
           {/* User Profile avatar dropdown */}
-          <div className="relative">
+          <div className="relative" ref={userMenuRef}>
             <button
-              onClick={() => setShowUserMenu(!showUserMenu)}
+              onClick={() => {
+                setShowUserMenu(!showUserMenu);
+                setShowNotifDropdown(false);
+              }}
               className="flex items-center gap-2 pl-1 pr-2 py-1 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition"
             >
               <img
@@ -200,8 +224,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAIChat, onToggleMobileSide
             </button>
 
             {showUserMenu && (
-              <div className="absolute right-0 mt-2 w-52 rounded-2xl glass-card p-1.5 shadow-2xl z-50 animate-in fade-in slide-in-from-top-2 duration-200">
-                <div className="px-3 py-2 border-b border-slate-200/60 dark:border-slate-800/80 mb-1">
+              <div className="absolute right-0 mt-2 w-56 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-2 shadow-2xl z-50 ring-1 ring-black/10 dark:ring-white/10 animate-in fade-in slide-in-from-top-2 duration-150">
+                <div className="px-3 py-2.5 border-b border-slate-100 dark:border-slate-800 mb-1.5 bg-slate-50/70 dark:bg-slate-800/50 rounded-xl">
                   <p className="text-xs font-bold text-slate-900 dark:text-white truncate">{user?.name}</p>
                   <p className="text-[10px] text-slate-400 truncate">{user?.email}</p>
                   <div className="mt-1 inline-flex items-center px-1.5 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wider bg-brand-500/15 text-brand-600 dark:text-brand-400">
@@ -212,9 +236,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAIChat, onToggleMobileSide
                 <Link
                   to="/profile"
                   onClick={() => setShowUserMenu(false)}
-                  className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+                  className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
                 >
-                  <User className="w-3.5 h-3.5" />
+                  <User className="w-3.5 h-3.5 text-brand-500" />
                   <span>My Profile</span>
                 </Link>
 
@@ -223,7 +247,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAIChat, onToggleMobileSide
                     setShowUserMenu(false);
                     logout();
                   }}
-                  className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition"
+                  className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition mt-1"
                 >
                   <LogOut className="w-3.5 h-3.5" />
                   <span>Sign Out</span>
