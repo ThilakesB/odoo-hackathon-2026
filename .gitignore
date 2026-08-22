@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+backend/.venv/
+.venv/
+env/
+venv/
+
+# Environment Variables & Secrets
+.env
+.env.local
+*.env
+
+# SQLite Databases
+*.db
+*.sqlite
+*.sqlite3
+dayflow.db
+backend/dayflow.db
+
+# Python bytecode & cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Frontend Build Output
+frontend/dist/
+dist/
+build/
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log
