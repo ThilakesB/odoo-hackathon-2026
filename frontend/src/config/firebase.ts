@@ -7,17 +7,18 @@ import {
   getRedirectResult
 } from 'firebase/auth';
 
-// Firebase configuration using Vite environment variables with graceful fallbacks
+// Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyDayflowDevPlaceholderKey2026",
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "dayflow-hrms.firebaseapp.com",
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "dayflow-hrms",
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "dayflow-hrms.appspot.com",
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "1029384756",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:1029384756:web:a1b2c3d4e5f6g7"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyAmOa-8MmZQhwlRMezNM3G5movTWoSpHaM",
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "dayfloe-fe234.firebaseapp.com",
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "dayfloe-fe234",
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "dayfloe-fe234.firebasestorage.app",
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "991828345165",
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:991828345165:web:f92c7b357052396bb73704",
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || "G-5J7SFCN56X"
 };
 
-// Initialize Firebase
+// Initialize Firebase App
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 export const auth = getAuth(app);
 
