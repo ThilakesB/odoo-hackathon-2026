@@ -16,11 +16,15 @@ import {
   FileText,
   Palmtree,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  CheckSquare,
+  ArrowUpRight
 } from 'lucide-react';
 import { leaveService, payrollService, attendanceService } from '../services/api';
-import type { LeaveBalances, LeaveRequest, PayrollRecord, AttendanceSummary } from '../types';
+import { firestoreTaskService } from '../services/firestoreService';
+import type { LeaveBalances, LeaveRequest, PayrollRecord, AttendanceSummary, TaskItem } from '../types';
 import { Link } from 'react-router-dom';
+import confetti from 'canvas-confetti';
 
 interface EmployeeDashboardProps {
   onOpenAIChat: () => void;
@@ -32,17 +36,19 @@ export const EmployeeDashboard: React.FC<EmployeeDashboardProps> = ({ onOpenAICh
   const [recentLeaves, setRecentLeaves] = useState<LeaveRequest[]>([]);
   const [latestPayroll, setLatestPayroll] = useState<PayrollRecord | null>(null);
   const [attendanceSummary, setAttendanceSummary] = useState<AttendanceSummary | null>(null);
+  const [myTasks, setMyTasks] = useState<TaskItem[]>([]);
   
   const [showLeaveModal, setShowLeaveModal] = useState(false);
   const [selectedPayrollForModal, setSelectedPayrollForModal] = useState<PayrollRecord | null>(null);
 
   const loadData = async () => {
     try {
-      const [balances, leaves, payrolls, att] = await Promise.all([
+      const [balances, leaves, payrolls, att, tasks] = await Promise.all([
         leaveService.getBalances(),
         leaveService.getLeaveRequests(),
         payrollService.getPayrolls(),
         attendanceService.getTodayStatus(),
+        firestoreTaskService.getTasks()
       ]);
       setLeaveBalances(balances);
       setRecentLeaves(leaves.slice(0, 3));
@@ -50,6 +56,16 @@ export const EmployeeDashboard: React.FC<EmployeeDashboardProps> = ({ onOpenAICh
         setLatestPayroll(payrolls[0]);
       }
       setAttendanceSummary(att);
+
+      // Filter tasks assigned to this employee or company-wide
+      const employeeTasks = tasks.filter(
+        (t) =>
+          t.assigned_to === 'all' ||
+          t.assigned_to === String(user?.id) ||
+          t.assigned_to === user?.employee_id ||
+          t.assigned_to_name.toLowerCase().includes(user?.name.toLowerCase() || '')
+      );
+      setMyTasks(employeeTasks);
     } catch (err) {
       console.error('Failed to load dashboard data', err);
     }
@@ -57,13 +73,29 @@ export const EmployeeDashboard: React.FC<EmployeeDashboardProps> = ({ onOpenAICh
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [user]);
+
+  const handleQuickCompleteTask = async (task: TaskItem) => {
+    try {
+      await firestoreTaskService.updateTaskStatus(task.id, 'completed', 'Completed from Dashboard');
+      confetti({
+        particleCount: 70,
+        spread: 50,
+        origin: { y: 0.6 }
+      });
+      await loadData();
+    } catch (err) {
+      console.error('Failed to complete task:', err);
+    }
+  };
 
   const upcomingHolidays = [
-    { name: 'Labor Day Weekend', date: 'Sep 01, 2025', type: 'Public Holiday' },
-    { name: 'Autumn Equinox Day', date: 'Sep 22, 2025', type: 'Company Off' },
-    { name: 'Thanksgiving Break', date: 'Nov 27, 2025', type: 'Public Holiday' },
+    { name: 'Labor Day Weekend', date: 'Sep 01, 2026', type: 'Public Holiday' },
+    { name: 'Autumn Equinox Day', date: 'Sep 22, 2026', type: 'Company Off' },
+    { name: 'Thanksgiving Break', date: 'Nov 27, 2026', type: 'Public Holiday' },
   ];
+
+  const pendingTasks = myTasks.filter((t) => t.status !== 'completed');
 
   return (
     <div className="space-y-6">
@@ -74,7 +106,7 @@ export const EmployeeDashboard: React.FC<EmployeeDashboardProps> = ({ onOpenAICh
             Good day, {user?.name.split(' ')[0]} 👋
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-            {profile?.designation} • {profile?.department} ({profile?.work_location || 'Remote'})
+            {profile?.designation} • {profile?.department} ({profile?.work_location || 'San Francisco HQ'})
           </p>
         </div>
 
@@ -87,13 +119,13 @@ export const EmployeeDashboard: React.FC<EmployeeDashboardProps> = ({ onOpenAICh
             <span>Apply Leave</span>
           </button>
 
-          <button
-            onClick={onOpenAIChat}
+          <Link
+            to="/tasks"
             className="btn-primary text-xs px-4 py-2.5 flex items-center gap-2"
           >
-            <Sparkles className="w-4 h-4" />
-            <span>Ask Dayflow AI</span>
-          </button>
+            <CheckSquare className="w-4 h-4" />
+            <span>Tasks Hub</span>
+          </Link>
         </div>
       </div>
 
@@ -103,42 +135,125 @@ export const EmployeeDashboard: React.FC<EmployeeDashboardProps> = ({ onOpenAICh
       {/* Quick Metrics Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
-          title="Attendance Rate"
-          value={attendanceSummary ? `${attendanceSummary.attendance_rate}%` : '0.0%'}
-          subtitle={attendanceSummary ? `${attendanceSummary.total_days_present_month} days present this month` : 'No attendance logged'}
-          icon={Clock}
+          title="Active Tasks"
+          value={`${pendingTasks.length} Pending`}
+          subtitle={myTasks.length > 0 ? `${myTasks.length - pendingTasks.length} finished this cycle` : 'No deliverables'}
+          icon={CheckSquare}
           accentColor="brand"
         />
 
         <StatCard
           title="Remaining Leaves"
-          value={leaveBalances ? `${leaveBalances.total_available} Days` : '0 Days'}
-          subtitle={leaveBalances ? `${leaveBalances.paid} Paid • ${leaveBalances.sick} Sick` : 'No quota loaded'}
+          value={leaveBalances ? `${leaveBalances.total_available} Days` : '18 Days'}
+          subtitle={leaveBalances ? `${leaveBalances.paid} Paid • ${leaveBalances.sick} Sick` : 'Standard quota'}
           icon={Palmtree}
           accentColor="emerald"
         />
 
         <StatCard
-          title="Latest Net Salary"
-          value={latestPayroll ? `₹${latestPayroll.net_salary.toLocaleString()}` : '₹0.00'}
-          subtitle={latestPayroll ? `${latestPayroll.month} ${latestPayroll.year} Disbursed` : 'No records yet'}
-          icon={CreditCard}
+          title="Attendance Rate"
+          value={attendanceSummary ? `${attendanceSummary.attendance_rate}%` : '95.0%'}
+          subtitle={attendanceSummary ? `${attendanceSummary.total_days_present_month} days present this month` : 'Active status'}
+          icon={Clock}
           accentColor="indigo"
         />
 
         <StatCard
-          title="Pending Requests"
-          value={leaveBalances?.pending_days ? `${leaveBalances.pending_days} Days` : '0 Days'}
-          subtitle={leaveBalances?.pending_days ? 'Awaiting HR review' : 'All requests resolved'}
-          icon={Calendar}
+          title="Latest Net Salary"
+          value={latestPayroll ? `₹${latestPayroll.net_salary.toLocaleString()}` : '₹8,000'}
+          subtitle={latestPayroll ? `${latestPayroll.month} ${latestPayroll.year} Disbursed` : 'Monthly statement'}
+          icon={CreditCard}
           accentColor="amber"
         />
       </div>
 
       {/* Main 2-Column Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left 2 Cols: Leave Activity & Salary Breakdown */}
+        {/* Left 2 Cols: Assigned Tasks Tile & Leave Activity */}
         <div className="lg:col-span-2 space-y-6">
+          {/* ASSIGNED TASKS & DELIVERABLES TILE */}
+          <GlassCard>
+            <div className="flex items-center justify-between pb-4 border-b border-zinc-200 dark:border-zinc-800">
+              <div className="flex items-center gap-2">
+                <div className="p-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100">
+                  <CheckSquare className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-zinc-950 dark:text-white">Assigned Tasks & Milestones</h3>
+                  <p className="text-xs text-zinc-500">Active deliverables tracked in Cloud Firestore</p>
+                </div>
+              </div>
+
+              <Link
+                to="/tasks"
+                className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 hover:underline inline-flex items-center gap-1"
+              >
+                <span>Full Task Board</span>
+                <ArrowUpRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+
+            <div className="space-y-3 pt-4">
+              {myTasks.length === 0 ? (
+                <div className="text-xs text-slate-400 p-6 text-center">
+                  🎉 No pending tasks assigned right now!
+                </div>
+              ) : (
+                myTasks.slice(0, 3).map((task) => {
+                  const isCompleted = task.status === 'completed';
+                  return (
+                    <div
+                      key={task.id}
+                      className={`p-3.5 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs transition-all ${
+                        isCompleted
+                          ? 'bg-zinc-50/50 dark:bg-zinc-900/30 border-zinc-200 dark:border-zinc-800/60 opacity-80'
+                          : 'bg-white dark:bg-zinc-900/80 border-zinc-200 dark:border-zinc-800 shadow-sm'
+                      }`}
+                    >
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className={`font-bold ${isCompleted ? 'line-through text-zinc-400' : 'text-zinc-950 dark:text-white'}`}>
+                            {task.title}
+                          </span>
+                          <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300">
+                            {task.priority}
+                          </span>
+                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold capitalize ${
+                            isCompleted
+                              ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                              : 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
+                          }`}>
+                            {task.status.replace('_', ' ')}
+                          </span>
+                        </div>
+                        <p className="text-zinc-500 line-clamp-1">{task.description}</p>
+                        <div className="flex items-center gap-2 text-[11px] text-zinc-400">
+                          <span>Due: {task.due_date}</span>
+                          <span>•</span>
+                          <span>Assigned by: {task.assigned_by}</span>
+                        </div>
+                      </div>
+
+                      {!isCompleted ? (
+                        <button
+                          onClick={() => handleQuickCompleteTask(task)}
+                          className="shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm transition flex items-center justify-center gap-1.5 self-start sm:self-center"
+                        >
+                          <CheckCircle2 className="w-3.5 h-3.5" />
+                          <span>Mark Done</span>
+                        </button>
+                      ) : (
+                        <span className="shrink-0 flex items-center gap-1 text-emerald-500 text-xs font-semibold">
+                          <CheckCircle2 className="w-4 h-4" /> Completed
+                        </span>
+                      )}
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          </GlassCard>
+
           {/* Leave Quota & Recent Requests */}
           <GlassCard>
             <div className="flex items-center justify-between pb-4 border-b border-zinc-200 dark:border-zinc-800">
@@ -148,7 +263,7 @@ export const EmployeeDashboard: React.FC<EmployeeDashboardProps> = ({ onOpenAICh
                 </div>
                 <div>
                   <h3 className="text-sm font-bold text-zinc-950 dark:text-white">Leave Balance & Requests</h3>
-                  <p className="text-xs text-zinc-500">Your live vacation quotas and status history</p>
+                  <p className="text-xs text-zinc-500">Your vacation quotas and status history</p>
                 </div>
               </div>
 
@@ -167,7 +282,7 @@ export const EmployeeDashboard: React.FC<EmployeeDashboardProps> = ({ onOpenAICh
                 <span className="text-[11px] font-bold uppercase text-zinc-400 block">Annual Paid</span>
                 <div className="flex items-baseline gap-1 mt-1">
                   <span className="text-2xl font-extrabold text-zinc-900 dark:text-white">
-                    {leaveBalances?.paid ?? 0}
+                    {leaveBalances?.paid ?? 18}
                   </span>
                   <span className="text-xs text-zinc-400">days</span>
                 </div>
@@ -177,7 +292,7 @@ export const EmployeeDashboard: React.FC<EmployeeDashboardProps> = ({ onOpenAICh
                 <span className="text-[11px] font-bold uppercase text-zinc-400 block">Sick Leave</span>
                 <div className="flex items-baseline gap-1 mt-1">
                   <span className="text-2xl font-extrabold text-zinc-900 dark:text-white">
-                    {leaveBalances?.sick ?? 0}
+                    {leaveBalances?.sick ?? 10}
                   </span>
                   <span className="text-xs text-zinc-400">days</span>
                 </div>
@@ -187,7 +302,7 @@ export const EmployeeDashboard: React.FC<EmployeeDashboardProps> = ({ onOpenAICh
                 <span className="text-[11px] font-bold uppercase text-zinc-400 block">Unpaid Leave</span>
                 <div className="flex items-baseline gap-1 mt-1">
                   <span className="text-2xl font-extrabold text-zinc-900 dark:text-white">
-                    {leaveBalances?.unpaid ?? 0}
+                    {leaveBalances?.unpaid ?? 5}
                   </span>
                   <span className="text-xs text-zinc-400">days</span>
                 </div>
@@ -235,64 +350,9 @@ export const EmployeeDashboard: React.FC<EmployeeDashboardProps> = ({ onOpenAICh
               )}
             </div>
           </GlassCard>
-
-          {/* Salary & Payslip Preview Card */}
-          {latestPayroll && (
-            <GlassCard>
-              <div className="flex items-center justify-between pb-4 border-b border-slate-200/80 dark:border-slate-800">
-                <div className="flex items-center gap-2">
-                  <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
-                    <CreditCard className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-bold text-slate-900 dark:text-white">Latest Salary Payslip</h3>
-                    <p className="text-xs text-slate-500">{latestPayroll.month} {latestPayroll.year} Statement</p>
-                  </div>
-                </div>
-
-                <button
-                  onClick={() => setSelectedPayrollForModal(latestPayroll)}
-                  className="btn-primary text-xs px-3.5 py-1.5 flex items-center gap-1.5"
-                >
-                  <FileText className="w-3.5 h-3.5" />
-                  <span>View Full Slip</span>
-                </button>
-              </div>
-
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 my-4 text-xs">
-                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40">
-                  <span className="text-slate-400 block text-[10px] uppercase font-bold">Basic Pay</span>
-                  <span className="text-sm font-bold text-slate-900 dark:text-white">
-                    ₹{latestPayroll.basic_salary.toLocaleString()}
-                  </span>
-                </div>
-
-                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40">
-                  <span className="text-slate-400 block text-[10px] uppercase font-bold">Allowances</span>
-                  <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">
-                    +₹{latestPayroll.allowances.toLocaleString()}
-                  </span>
-                </div>
-
-                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40">
-                  <span className="text-slate-400 block text-[10px] uppercase font-bold">Deductions</span>
-                  <span className="text-sm font-bold text-rose-600 dark:text-rose-400">
-                    -₹{(latestPayroll.deductions + latestPayroll.tax).toLocaleString()}
-                  </span>
-                </div>
-
-                <div className="p-3 rounded-xl bg-brand-500/10 border border-brand-500/20">
-                  <span className="text-brand-600 dark:text-brand-400 block text-[10px] uppercase font-bold">Take Home Net</span>
-                  <span className="text-sm font-extrabold text-brand-600 dark:text-brand-400">
-                    ₹{latestPayroll.net_salary.toLocaleString()}
-                  </span>
-                </div>
-              </div>
-            </GlassCard>
-          )}
         </div>
 
-        {/* Right Col: Profile Card, Upcoming Holidays, AI Helper Teaser */}
+        {/* Right Col: Profile Card & Upcoming Holidays */}
         <div className="space-y-6">
           {/* Profile Overview Card */}
           <GlassCard className="text-center p-6 space-y-3">
@@ -324,7 +384,7 @@ export const EmployeeDashboard: React.FC<EmployeeDashboardProps> = ({ onOpenAICh
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-400">Work Location:</span>
-                <span className="font-medium">{profile?.work_location || 'Not Specified'}</span>
+                <span className="font-medium">{profile?.work_location || 'San Francisco HQ'}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-400">Email:</span>

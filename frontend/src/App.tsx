@@ -7,6 +7,7 @@ import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { EmployeeDashboard } from './pages/EmployeeDashboard';
 import { AdminDashboard } from './pages/AdminDashboard';
+import { TasksPage } from './pages/TasksPage';
 import { AttendancePage } from './pages/AttendancePage';
 import { LeavePage } from './pages/LeavePage';
 import { PayrollPage } from './pages/PayrollPage';
@@ -72,6 +73,7 @@ export const App: React.FC = () => {
               }
             >
               <Route index element={<HomeRouter />} />
+              <Route path="tasks" element={<TasksPage />} />
               <Route
                 path="admin"
                 element={

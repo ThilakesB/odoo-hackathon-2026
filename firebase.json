@@ -12,5 +12,20 @@
         "destination": "/index.html"
       }
     ]
+  },
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "auth": {
+    "authorizedDomains": [
+      "localhost",
+      "dayfloe-fe234.firebaseapp.com",
+      "dayfloe-fe234.web.app"
+    ],
+    "providers": {
+      "emailPassword": true,
+      "googleSignIn": true
+    }
   }
 }

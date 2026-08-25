@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { GlassCard } from '../components/GlassCard';
@@ -11,46 +11,22 @@ import {
   AlertCircle,
   Sparkles,
   KeyRound,
-  CheckCircle2,
-  RotateCw,
-  Clock,
-  Send
+  RotateCw
 } from 'lucide-react';
-import { authService } from '../services/api';
 import { signInWithGooglePopup } from '../config/firebase';
 import confetti from 'canvas-confetti';
 
 export const LoginPage: React.FC = () => {
-  const [authMode, setAuthMode] = useState<'otp' | 'password'>('otp');
   const navigate = useNavigate();
-  const { login, loginWithOtp, loginWithGoogle } = useAuth();
+  const { login, loginWithGoogle, loginAsDemo } = useAuth();
 
   // Password Login State
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  // Passwordless Email OTP Two-Step State
-  const [otpStep, setOtpStep] = useState<1 | 2>(1); // 1: Enter Email, 2: Enter OTP
-  const [otpEmail, setOtpEmail] = useState('');
-  const [otpCode, setOtpCode] = useState('');
-  const [resendCooldown, setResendCooldown] = useState<number>(0);
-  const [otpMessage, setOtpMessage] = useState<string | null>(null);
-  const [sandboxPreview, setSandboxPreview] = useState<string | null>(null);
-
   // Common UI State
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-
-  // Resend Countdown Timer
-  useEffect(() => {
-    let timer: any;
-    if (resendCooldown > 0) {
-      timer = setInterval(() => {
-        setResendCooldown((prev) => (prev > 0 ? prev - 1 : 0));
-      }, 1000);
-    }
-    return () => clearInterval(timer);
-  }, [resendCooldown]);
 
   // Email format validator
   const isValidEmail = (val: string) => {
@@ -64,13 +40,7 @@ export const LoginPage: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
-      const googleUser = await signInWithGooglePopup();
-      await loginWithGoogle({
-        email: googleUser.email,
-        name: googleUser.name,
-        photo_url: googleUser.photoUrl,
-        id_token: googleUser.idToken
-      });
+      await loginWithGoogle();
 
       confetti({
         particleCount: 60,
@@ -81,12 +51,12 @@ export const LoginPage: React.FC = () => {
       navigate('/');
     } catch (err: any) {
       if (err.code === 'auth/popup-closed-by-user') {
-        setError('Google sign-in was closed before completion.');
+        setError('Google sign-in popup was closed before completion.');
       } else if (err.code === 'auth/cancelled-popup-request') {
         // Ignored
       } else {
         console.error('Google Sign-In Error:', err);
-        setError(err.response?.data?.detail || err.message || 'Google Sign-In failed.');
+        setError(err.message || 'Google Sign-In failed.');
       }
     } finally {
       setLoading(false);
@@ -94,77 +64,7 @@ export const LoginPage: React.FC = () => {
   };
 
   // -------------------------------------------------------------
-  // Step 1: Request OTP
-  // -------------------------------------------------------------
-  const handleRequestOtp = async (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    if (!otpEmail.trim()) {
-      setError('Please enter your email address.');
-      return;
-    }
-    if (!isValidEmail(otpEmail)) {
-      setError('Please enter a valid email address (e.g. name@company.com).');
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-    setOtpMessage(null);
-
-    try {
-      const res = await authService.requestOtp(otpEmail.trim().toLowerCase());
-      setOtpStep(2);
-      setResendCooldown(res.cooldown_seconds || 60);
-      setOtpMessage(res.message || `A 6-digit code has been sent to ${otpEmail}.`);
-      if (res.code_preview) {
-        setSandboxPreview(res.code_preview);
-      }
-      setOtpCode('');
-    } catch (err: any) {
-      const msg = err.response?.data?.detail || 'Failed to send OTP. Please check your email and try again.';
-      setError(msg);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // -------------------------------------------------------------
-  // Step 2: Verify OTP
-  // -------------------------------------------------------------
-  const handleVerifyOtp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!otpCode.trim() || otpCode.trim().length !== 6) {
-      setError('Please enter the full 6-digit verification code.');
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-
-    try {
-      // TODO: Migrate to httpOnly cookie storage once backend supports cookie-based session tokens
-      await loginWithOtp({
-        email: otpEmail.trim().toLowerCase(),
-        otp: otpCode.trim()
-      });
-
-      confetti({
-        particleCount: 50,
-        spread: 60,
-        origin: { y: 0.6 }
-      });
-
-      navigate('/');
-    } catch (err: any) {
-      const msg = err.response?.data?.detail || 'Invalid or expired OTP. Please try again.';
-      setError(msg);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // -------------------------------------------------------------
-  // Standard Password Login
+  // Standard Firebase Email/Password Login
   // -------------------------------------------------------------
   const handlePasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -180,51 +80,70 @@ export const LoginPage: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
-      await login({ email, password });
+      await login({ email: email.trim().toLowerCase(), password });
       navigate('/');
     } catch (err: any) {
-      setError(err.response?.data?.detail || 'Invalid email or password.');
+      setError(err.message || 'Invalid email or password.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // -------------------------------------------------------------
+  // 1-Click Fast Demo Login
+  // -------------------------------------------------------------
+  const handleQuickDemo = async (role: 'admin' | 'employee') => {
+    setLoading(true);
+    setError(null);
+    try {
+      await loginAsDemo(role);
+      confetti({
+        particleCount: 50,
+        spread: 60,
+        origin: { y: 0.6 }
+      });
+      navigate('/');
+    } catch (err: any) {
+      setError('Failed to launch demo session.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center p-4 sm:p-6 bg-slate-50 relative overflow-hidden">
+    <div className="min-h-screen w-full flex items-center justify-center p-4 sm:p-6 bg-slate-50 dark:bg-[#070b14] relative overflow-hidden">
       <div className="w-full max-w-md relative z-10 space-y-6">
 
         {/* Logo & Headline */}
         <div className="text-center space-y-2">
-          <div className="inline-flex w-12 h-12 rounded-2xl bg-black text-white items-center justify-center font-black text-2xl shadow-sm mb-1">
+          <div className="inline-flex w-12 h-12 rounded-2xl bg-black text-white dark:bg-white dark:text-black items-center justify-center font-black text-2xl shadow-sm mb-1">
             D
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-zinc-950">
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-zinc-950 dark:text-white">
             Welcome to Dayflow
           </h1>
           <p className="text-xs sm:text-sm text-zinc-500 font-medium">
-            Every Workday, Perfectly Aligned. Sign in to your workspace.
+            Firebase-Powered HR Management System • Project: <code className="text-primary-600 font-mono">dayfloe-fe234</code>
           </p>
         </div>
 
         {/* Main Authentication Card */}
-        <GlassCard className="p-6 sm:p-8 space-y-5 bg-white border border-zinc-200/90 shadow-xl">
+        <GlassCard className="p-6 sm:p-8 space-y-5 bg-white dark:bg-zinc-900/90 border border-zinc-200/90 dark:border-zinc-800 shadow-xl">
 
           {/* Error Banner */}
           {error && (
-            <div className="p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-start gap-2.5 animate-in fade-in duration-200">
+            <div className="p-3.5 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 text-xs flex items-start gap-2.5 animate-in fade-in duration-200">
               <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
               <div className="flex-1 font-medium">{error}</div>
             </div>
           )}
 
-          {/* ========================================================= */}
           {/* 1. Google Single Sign-On Button (Firebase SDK) */}
-          {/* ========================================================= */}
           <button
             type="button"
             onClick={handleGoogleSignIn}
             disabled={loading}
-            className="w-full py-2.5 px-4 rounded-xl bg-white hover:bg-zinc-50 border border-zinc-200/90 text-zinc-800 text-xs sm:text-sm font-bold flex items-center justify-center gap-2.5 shadow-sm transition active:scale-[0.99] disabled:opacity-50"
+            className="w-full py-2.5 px-4 rounded-xl bg-white hover:bg-zinc-50 dark:bg-zinc-800 dark:hover:bg-zinc-700 border border-zinc-200/90 dark:border-zinc-700 text-zinc-800 dark:text-white text-xs sm:text-sm font-bold flex items-center justify-center gap-2.5 shadow-sm transition active:scale-[0.99] disabled:opacity-50"
           >
             <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z" />
@@ -232,284 +151,117 @@ export const LoginPage: React.FC = () => {
               <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15z" />
               <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z" />
             </svg>
-            <span>Continue with Google</span>
+            <span>Continue with Google Sign-In</span>
           </button>
 
           {/* Divider */}
           <div className="relative flex items-center justify-center my-2">
-            <div className="border-t border-zinc-200/80 w-full" />
-            <span className="bg-white px-3 text-[10px] font-bold uppercase tracking-wider text-zinc-400 shrink-0">
-              Or authenticate with
+            <div className="border-t border-zinc-200/80 dark:border-zinc-800 w-full" />
+            <span className="bg-white dark:bg-zinc-900 px-3 text-[10px] font-bold uppercase tracking-wider text-zinc-400 shrink-0">
+              Or with Email & Password
             </span>
-            <div className="border-t border-zinc-200/80 w-full" />
+            <div className="border-t border-zinc-200/80 dark:border-zinc-800 w-full" />
           </div>
 
-          {/* Login Mode Switcher Pills */}
-          <div className="flex items-center p-1 bg-zinc-100 rounded-2xl text-xs font-bold border border-zinc-200">
-            <button
-              type="button"
-              onClick={() => {
-                setAuthMode('otp');
-                setError(null);
-              }}
-              className={`flex-1 py-2 px-3 rounded-xl transition flex items-center justify-center gap-1.5 ${authMode === 'otp'
-                  ? 'bg-white text-zinc-950 shadow-sm'
-                  : 'text-zinc-600 hover:text-zinc-950'
-                }`}
-            >
-              <Sparkles className="w-3.5 h-3.5 text-zinc-900" />
-              <span>Email OTP</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => {
-                setAuthMode('password');
-                setError(null);
-              }}
-              className={`flex-1 py-2 px-3 rounded-xl transition flex items-center justify-center gap-1.5 ${authMode === 'password'
-                  ? 'bg-white text-zinc-950 shadow-sm'
-                  : 'text-zinc-600 hover:text-zinc-950'
-                }`}
-            >
-              <KeyRound className="w-3.5 h-3.5 text-zinc-600" />
-              <span>Password</span>
-            </button>
-          </div>
-
-          {/* ========================================================= */}
-          {/* OPTION 1: TWO-STEP EMAIL OTP FLOW */}
-          {/* ========================================================= */}
-          {authMode === 'otp' && (
-            <div className="space-y-4">
-
-              {/* STEP 1: Enter Email */}
-              {otpStep === 1 && (
-                <form onSubmit={handleRequestOtp} className="space-y-4">
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold uppercase tracking-wider text-zinc-600">
-                      Work Email Address
-                    </label>
-                    <div className="relative">
-                      <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
-                      <input
-                        type="email"
-                        value={otpEmail}
-                        onChange={(e) => setOtpEmail(e.target.value)}
-                        placeholder="you@company.com"
-                        className="w-full pl-10 pr-4 py-2.5 rounded-xl text-xs sm:text-sm bg-zinc-50 border border-zinc-200 text-zinc-900 placeholder-zinc-400 focus:outline-none focus:border-zinc-500 font-medium"
-                        required
-                        autoFocus
-                      />
-                    </div>
-                    <p className="text-[11px] text-zinc-400">
-                      We'll send a 6-digit one-time passcode to this email. No password required.
-                    </p>
-                  </div>
-
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="w-full btn-primary py-2.5 text-xs sm:text-sm font-bold flex items-center justify-center gap-2 shadow-sm disabled:opacity-50"
-                  >
-                    {loading ? (
-                      <>
-                        <RotateCw className="w-4 h-4 animate-spin" />
-                        <span>Sending One-Time Passcode...</span>
-                      </>
-                    ) : (
-                      <>
-                        <span>Send 6-Digit OTP</span>
-                        <ArrowRight className="w-4 h-4" />
-                      </>
-                    )}
-                  </button>
-                </form>
-              )}
-
-              {/* STEP 2: Enter 6-Digit OTP */}
-              {otpStep === 2 && (
-                <form onSubmit={handleVerifyOtp} className="space-y-4">
-                  {/* Success notification banner */}
-                  {otpMessage && (
-                    <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs space-y-1">
-                      <div className="flex items-center gap-2 font-bold text-emerald-800">
-                        <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                        <span>{otpMessage}</span>
-                      </div>
-                      <p className="text-[11px] text-emerald-700 leading-normal pl-6">
-                        📩 If not in your primary inbox, please check your <strong>Spam / Promotions</strong> folder (Sender: <code>onboarding@resend.dev</code>).
-                      </p>
-                    </div>
-                  )}
-
-                  {/* Development Sandbox Preview & Auto-fill */}
-                  {sandboxPreview && (
-                    <div className="p-3 rounded-2xl bg-amber-50 border border-amber-200/90 text-amber-950 text-xs flex items-center justify-between shadow-sm">
-                      <div className="space-y-0.5">
-                        <div className="flex items-center gap-1.5 font-bold text-amber-900">
-                          <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-                          <span>Local Testing OTP</span>
-                        </div>
-                        <p className="text-[11px] text-amber-800">
-                          Code: <strong className="font-mono text-sm tracking-wider font-extrabold text-amber-950">{sandboxPreview}</strong>
-                        </p>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => setOtpCode(sandboxPreview)}
-                        className="px-3 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 active:scale-95 text-white font-bold text-[11px] transition shadow-sm"
-                      >
-                        Auto-fill
-                      </button>
-                    </div>
-                  )}
-
-                  <div className="space-y-1.5">
-                    <div className="flex items-center justify-between">
-                      <label className="text-xs font-bold uppercase tracking-wider text-zinc-600">
-                        Enter 6-Digit Code
-                      </label>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setOtpStep(1);
-                          setError(null);
-                        }}
-                        className="text-[11px] font-semibold text-zinc-500 hover:text-zinc-900 underline"
-                      >
-                        Change Email ({otpEmail})
-                      </button>
-                    </div>
-
-                    <div className="relative">
-                      <KeyRound className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
-                      <input
-                        type="text"
-                        maxLength={6}
-                        pattern="[0-9]*"
-                        inputMode="numeric"
-                        value={otpCode}
-                        onChange={(e) => setOtpCode(e.target.value.replace(/[^0-9]/g, ''))}
-                        placeholder="••••••"
-                        className="w-full pl-10 pr-4 py-2.5 rounded-xl text-center text-lg sm:text-xl font-mono tracking-[8px] font-bold bg-zinc-50 border border-zinc-200 text-zinc-900 placeholder-zinc-300 focus:outline-none focus:border-zinc-900"
-                        required
-                        autoFocus
-                      />
-                    </div>
-                    <div className="flex items-center justify-between text-[11px] text-zinc-400 pt-1">
-                      <span>Code expires in 5 minutes</span>
-                      <span>5 attempts max</span>
-                    </div>
-                  </div>
-
-                  <button
-                    type="submit"
-                    disabled={loading || otpCode.length !== 6}
-                    className="w-full btn-primary py-2.5 text-xs sm:text-sm font-bold flex items-center justify-center gap-2 shadow-sm disabled:opacity-50"
-                  >
-                    {loading ? (
-                      <>
-                        <RotateCw className="w-4 h-4 animate-spin" />
-                        <span>Verifying Passcode...</span>
-                      </>
-                    ) : (
-                      <>
-                        <span>Verify & Sign In</span>
-                        <ArrowRight className="w-4 h-4" />
-                      </>
-                    )}
-                  </button>
-
-                  {/* Resend OTP button with 60s cooldown */}
-                  <div className="text-center pt-2">
-                    {resendCooldown > 0 ? (
-                      <span className="text-xs text-zinc-400 font-medium inline-flex items-center gap-1.5">
-                        <Clock className="w-3.5 h-3.5" />
-                        Resend code in <strong className="text-zinc-700 font-mono">{resendCooldown}s</strong>
-                      </span>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() => handleRequestOtp()}
-                        disabled={loading}
-                        className="text-xs font-bold text-zinc-900 hover:text-black transition inline-flex items-center gap-1.5"
-                      >
-                        <Send className="w-3.5 h-3.5" />
-                        <span>Resend 6-Digit OTP</span>
-                      </button>
-                    )}
-                  </div>
-                </form>
-              )}
+          {/* Firebase Email/Password Sign-In Form */}
+          <form onSubmit={handlePasswordSubmit} className="space-y-4">
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-400">
+                Email Address
+              </label>
+              <div className="relative">
+                <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="employee@dayflow.com"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl text-xs sm:text-sm bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none focus:border-zinc-500 font-medium"
+                  required
+                />
+              </div>
             </div>
-          )}
 
-          {/* ========================================================= */}
-          {/* OPTION 2: PASSWORD SIGN-IN */}
-          {/* ========================================================= */}
-          {authMode === 'password' && (
-            <form onSubmit={handlePasswordSubmit} className="space-y-4">
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold uppercase tracking-wider text-zinc-600">
-                  Email Address
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-400">
+                  Password
                 </label>
-                <div className="relative">
-                  <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="thilakesb@gmail.com"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl text-xs sm:text-sm bg-zinc-50 border border-zinc-200 text-zinc-900 placeholder-zinc-400 focus:outline-none focus:border-zinc-500 font-medium"
-                    required
-                  />
-                </div>
               </div>
+              <div className="relative">
+                <Lock className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl text-xs sm:text-sm bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none focus:border-zinc-500 font-medium"
+                  required
+                />
+              </div>
+            </div>
 
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <label className="text-xs font-bold uppercase tracking-wider text-zinc-600">
-                    Password
-                  </label>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full btn-primary py-2.5 text-xs sm:text-sm font-bold flex items-center justify-center gap-2 shadow-sm disabled:opacity-50"
+            >
+              {loading ? (
+                <>
+                  <RotateCw className="w-4 h-4 animate-spin" />
+                  <span>Signing in with Firebase...</span>
+                </>
+              ) : (
+                <>
+                  <span>Sign In</span>
+                  <ArrowRight className="w-4 h-4" />
+                </>
+              )}
+            </button>
+          </form>
+
+          {/* Quick Demo 1-Click Fast Login Section */}
+          <div className="pt-2 border-t border-zinc-100 dark:border-zinc-800">
+            <div className="flex items-center gap-1.5 mb-2.5 text-zinc-400 dark:text-zinc-500">
+              <Sparkles className="w-3.5 h-3.5 text-primary-500" />
+              <span className="text-[11px] font-bold uppercase tracking-wider">
+                Instant 1-Click Demo Profiles
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => handleQuickDemo('admin')}
+                disabled={loading}
+                className="p-2.5 rounded-xl bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 border border-zinc-200 dark:border-zinc-700 text-left transition"
+              >
+                <div className="flex items-center gap-1.5">
+                  <Shield className="w-3.5 h-3.5 text-primary-500" />
+                  <span className="text-xs font-bold text-zinc-900 dark:text-white">HR Admin</span>
                 </div>
-                <div className="relative">
-                  <Lock className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
-                  <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl text-xs sm:text-sm bg-zinc-50 border border-zinc-200 text-zinc-900 placeholder-zinc-400 focus:outline-none focus:border-zinc-500 font-medium"
-                    required
-                  />
-                </div>
-              </div>
+                <p className="text-[10px] text-zinc-500 mt-0.5">Sarah Jenkins</p>
+              </button>
 
               <button
-                type="submit"
+                type="button"
+                onClick={() => handleQuickDemo('employee')}
                 disabled={loading}
-                className="w-full btn-primary py-2.5 text-xs sm:text-sm font-bold flex items-center justify-center gap-2 shadow-sm disabled:opacity-50"
+                className="p-2.5 rounded-xl bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 border border-zinc-200 dark:border-zinc-700 text-left transition"
               >
-                {loading ? (
-                  <>
-                    <RotateCw className="w-4 h-4 animate-spin" />
-                    <span>Signing in...</span>
-                  </>
-                ) : (
-                  <>
-                    <span>Sign In to Workspace</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </>
-                )}
+                <div className="flex items-center gap-1.5">
+                  <UserCheck className="w-3.5 h-3.5 text-emerald-500" />
+                  <span className="text-xs font-bold text-zinc-900 dark:text-white">Employee</span>
+                </div>
+                <p className="text-[10px] text-zinc-500 mt-0.5">Alex Chen</p>
               </button>
-            </form>
-          )}
+            </div>
+          </div>
 
           {/* Footer Sign Up Link */}
-          <div className="text-center pt-2 text-xs text-zinc-500 border-t border-zinc-100 font-medium">
+          <div className="text-center pt-2 text-xs text-zinc-500 border-t border-zinc-100 dark:border-zinc-800 font-medium">
             Don't have a Dayflow account yet?{' '}
-            <Link to="/register" className="font-bold text-zinc-950 hover:underline">
+            <Link to="/register" className="font-bold text-zinc-950 dark:text-white hover:underline">
               Create an Account
             </Link>
           </div>
@@ -518,3 +270,4 @@ export const LoginPage: React.FC = () => {
     </div>
   );
 };
+export default LoginPage;

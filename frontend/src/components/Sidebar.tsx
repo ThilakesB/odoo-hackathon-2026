@@ -10,7 +10,7 @@ import {
   Users,
   BarChart3,
   Sparkles,
-  ShieldAlert,
+  CheckSquare,
   ChevronRight,
   X
 } from 'lucide-react';
@@ -27,6 +27,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onCloseMobile, onO
 
   const employeeLinks = [
     { to: '/', label: 'My Dashboard', icon: LayoutDashboard },
+    { to: '/tasks', label: 'Tasks & Milestones', icon: CheckSquare },
     { to: '/attendance', label: 'Attendance', icon: Clock },
     { to: '/leave', label: 'Leave Requests', icon: CalendarDays },
     { to: '/payroll', label: 'Salary & Payslips', icon: CreditCard },
@@ -35,6 +36,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onCloseMobile, onO
 
   const adminLinks = [
     { to: '/admin', label: 'Admin Dashboard', icon: LayoutDashboard },
+    { to: '/tasks', label: 'Task Assignment Hub', icon: CheckSquare },
     { to: '/admin/employees', label: 'Employee Directory', icon: Users },
     { to: '/attendance', label: 'Attendance Log', icon: Clock },
     { to: '/leave', label: 'Leave Approvals', icon: CalendarDays },

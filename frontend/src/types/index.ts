@@ -1,7 +1,8 @@
 export type Role = 'admin' | 'employee';
 
 export interface User {
-  id: number;
+  id: number | string;
+  uid?: string;
   employee_id: string;
   name: string;
   email: string;
@@ -12,8 +13,9 @@ export interface User {
 }
 
 export interface EmployeeProfile {
-  id: number;
-  user_id: number;
+  id: number | string;
+  user_id: number | string;
+  uid?: string;
   department: string;
   designation: string;
   joining_date?: string;
@@ -28,9 +30,29 @@ export interface EmployeeProfile {
   user: User;
 }
 
+export type TaskPriority = 'low' | 'medium' | 'high' | 'urgent';
+export type TaskStatus = 'todo' | 'in_progress' | 'completed' | 'under_review';
+
+export interface TaskItem {
+  id: string;
+  title: string;
+  description: string;
+  assigned_to: string; // employee_id or uid
+  assigned_to_name: string;
+  assigned_to_email?: string;
+  assigned_by: string; // admin name or id
+  priority: TaskPriority;
+  status: TaskStatus;
+  due_date: string;
+  created_at: string;
+  completed_at?: string;
+  completion_notes?: string;
+  category?: string;
+}
+
 export interface AttendanceRecord {
-  id: number;
-  employee_id: number;
+  id: number | string;
+  employee_id: number | string;
   date: string;
   check_in?: string;
   check_out?: string;
@@ -55,8 +77,8 @@ export interface AttendanceSummary {
 }
 
 export interface LeaveRequest {
-  id: number;
-  employee_id: number;
+  id: number | string;
+  employee_id: number | string;
   leave_type: 'paid' | 'sick' | 'unpaid';
   start_date: string;
   end_date: string;
@@ -79,8 +101,8 @@ export interface LeaveBalances {
 }
 
 export interface PayrollRecord {
-  id: number;
-  employee_id: number;
+  id: number | string;
+  employee_id: number | string;
   month: string;
   year: number;
   basic_salary: number;
@@ -98,8 +120,8 @@ export interface PayrollRecord {
 }
 
 export interface NotificationItem {
-  id: number;
-  employee_id: number;
+  id: number | string;
+  employee_id: number | string;
   title: string;
   message: string;
   type: 'info' | 'success' | 'warning' | 'alert';
@@ -115,6 +137,8 @@ export interface DashboardSummary {
   pending_leave_requests: number;
   monthly_payroll_spend: number;
   attendance_rate_today: number;
+  active_tasks_count?: number;
+  completed_tasks_count?: number;
 }
 
 export interface AttendanceTrendItem {

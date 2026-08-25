@@ -4,8 +4,14 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   signInWithRedirect,
-  getRedirectResult
+  getRedirectResult,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut,
+  sendPasswordResetEmail,
+  updateProfile
 } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -19,8 +25,13 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase App
-const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+export const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+
+// Initialize Firebase Auth
 export const auth = getAuth(app);
+
+// Initialize Cloud Firestore
+export const db = getFirestore(app);
 
 // Configure Google Auth Provider
 export const googleProvider = new GoogleAuthProvider();
@@ -39,6 +50,8 @@ export const signInWithGoogle = async () => {
 
     return {
       success: true,
+      user,
+      uid: user.uid,
       email: user.email || '',
       name: user.displayName || user.email?.split('@')[0] || 'Google User',
       photoUrl: user.photoURL || undefined,
@@ -60,6 +73,47 @@ export const signInWithGoogle = async () => {
 export const signInWithGooglePopup = signInWithGoogle;
 
 /**
+ * Email & Password Login
+ */
+export const loginWithEmail = async (email: string, pass: string) => {
+  const userCredential = await signInWithEmailAndPassword(auth, email, pass);
+  const idToken = await userCredential.user.getIdToken();
+  return {
+    user: userCredential.user,
+    idToken
+  };
+};
+
+/**
+ * Email & Password Registration
+ */
+export const registerWithEmail = async (email: string, pass: string, displayName?: string) => {
+  const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+  if (displayName && userCredential.user) {
+    await updateProfile(userCredential.user, { displayName });
+  }
+  const idToken = await userCredential.user.getIdToken();
+  return {
+    user: userCredential.user,
+    idToken
+  };
+};
+
+/**
+ * Sign out helper
+ */
+export const logoutUser = async () => {
+  return await signOut(auth);
+};
+
+/**
+ * Password Reset
+ */
+export const resetUserPassword = async (email: string) => {
+  return await sendPasswordResetEmail(auth, email);
+};
+
+/**
  * Checks for Google authentication redirect result when page reloads.
  */
 export const checkGoogleRedirectResult = async () => {
@@ -70,6 +124,8 @@ export const checkGoogleRedirectResult = async () => {
       const idToken = await user.getIdToken();
       return {
         success: true,
+        user,
+        uid: user.uid,
         email: user.email || '',
         name: user.displayName || user.email?.split('@')[0] || 'Google User',
         photoUrl: user.photoURL || undefined,
