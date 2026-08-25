@@ -1,135 +1,158 @@
-# Dayflow – Every Workday, Perfectly Aligned 🌊✨
+<div align="center">
 
-A full-stack, enterprise-ready Human Resource Management System (HRMS) built with **FastAPI**, **React**, **TypeScript**, **Tailwind CSS**, **Recharts**, and an intelligent **AI HR Copilot powered by Gemini**.
+# 🌊 Dayflow — Human Resource Management System ✨
 
----
+### *Every Workday, Perfectly Aligned.*
 
-## 🌟 Key Highlights & Features
-
-### 1. 💎 Apple-Inspired Liquid Glassmorphism UI
-- **Frosted Glass Cards:** Dynamic backdrop-blur (`backdrop-blur-2xl`), luminous border highlights, subtle glowing rims.
-- **Adaptive Themes:** Instant smooth toggle between **Dark Mode** and **Light Mode**.
-- **Responsive Layout:** Optimized for desktop command centers and mobile workdays.
-- **Micro-Interactions:** Smooth spring transitions, live ticking timer, and celebratory confetti effects.
-
-### 2. 🔐 Authentication & Role-Based Access Control (RBAC)
-- Secure JWT Bearer Token authentication with direct **Bcrypt** password hashing.
-- Role separation between **HR / Admin** and **Employee**.
-- **1-Click Demo Logins** on the login screen for instant evaluation.
-
-### 3. ⏱️ Real-Time Attendance Management
-- **Live Clock In / Clock Out** widget with duration counter and punch status.
-- Attendance telemetry history with status tags: `Present`, `Half Day`, `Absent`, `Leave`.
-- Search, filter, and 1-click **Export to CSV Report**.
-
-### 4. 🌴 Leave Management & Workflow
-- Visual remaining balances: **Paid Annual Leave**, **Sick Leave**, **Unpaid Leave**.
-- Dynamic application modal with automatic duration and balance calculation.
-- **Admin Approval Queue:** 1-click Approve / Reject with custom HR manager comments.
-- Automatic balance deduction and real-time employee notifications.
-
-### 5. 💵 Payroll & Interactive Payslip Engine
-- Comprehensive salary calculations: Basic Salary, Allowances (HRA/Special), Deductions, Tax, and Net Take-Home Pay.
-- **Official Printable / Downloadable Payslip Modal** with verification stamp.
-- Admin Payroll Manager: generate monthly runs, adjust bonuses, deductions, and withholdings.
-
-### 6. 📊 Workforce Intelligence & Analytics
-- Visual data analytics using **Recharts**:
-  - 14-Day Attendance Telemetry (Area Chart)
-  - Department Headcount Distribution (Bar Chart)
-  - Leave Utilization Breakdown (Donut Chart)
-  - Monthly Payroll Expenditure vs Tax Withholdings (Bar Chart)
-- 1-click **Export Full BI Report** in JSON/CSV.
-
-### 7. 🤖 AI HR Assistant (Gemini Copilot)
-- Natural language query understanding:
-  - *"How many leave days do I have left?"*
-  - *"Show my attendance summary for this month"*
-  - *"What is my salary breakdown and take-home pay?"*
-  - *"Apply sick leave for tomorrow"*
-- Smart conversational tool execution with rich visual confirmation cards.
-- Built-in deterministic NLP fallback engine so it works seamlessly even without an external API key.
+<p align="center">
+  <img src="https://img.shields.io/badge/Firebase-Auth_%26_Firestore-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" alt="Firebase" />
+  <img src="https://img.shields.io/badge/React_18-TypeScript-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React" />
+  <img src="https://img.shields.io/badge/Tailwind_CSS-Modern_UI-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
+  <img src="https://img.shields.io/badge/Google_Cloud-Project_dayfloe--fe234-4285F4?style=for-the-badge&logo=google-cloud&logoColor=white" alt="Google Cloud" />
+  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License" />
+</p>
 
 ---
 
-## 🚀 Quick Start Guide
+### 🚀 **Overview**
 
-### Demo Credentials
+**Dayflow** is an enterprise-grade HR Management System built with **Firebase Authentication**, **Cloud Firestore Database**, **React (TypeScript)**, and **Tailwind CSS**. It connects Employees and HR Administrators in real-time for seamless task delegation, leave approvals, personal profile tracking, and attendance telemetry.
+
+---
+
+</div>
+
+<div align="center">
+
+## 🔐 **Authentication & Security**
+
+> **Note:** Full Firebase Authentication (Email/Password & Google Sign-In) has been integrated into the system with project `dayfloe-fe234`.
+
+| Provider | Description | Status |
+| :---: | :---: | :---: |
+| 🔑 **Email & Password** | Secure Firebase Auth registration and login with real-time profile sync | ✅ Active |
+| 🌐 **Google Sign-In** | 1-Click interactive Google Authentication popup with auto-linking | ✅ Active |
+| ⚡ **1-Click Demo Logins** | Instant sandbox access for HR Admin (`Sarah Jenkins`) and Employee (`Alex Chen`) | ✅ Active |
+
+---
+
+## 🌟 **Core Modules & Capabilities**
+
+</div>
+
+<div align="center">
+
+### 1. 📋 **Task Management & Milestone Completion**
+* **HR / Admin Workspace:** Create and assign tasks with due dates, priority tags (`Urgent`, `High`, `Medium`, `Low`), categories, and employee delegation.
+* **Employee Workspace:** Track assigned deliverables, toggle active statuses (`To Do` → `In Progress` → `Completed`), and submit completion notes with confetti celebration.
+* **Interactive Dashboard Tiles:** Live summary tiles on both Employee and Admin dashboards for instant task oversight.
+
+---
+
+### 2. 🌴 **Leave Approvals & Real-Time Quotas**
+* **Dynamic Balances:** Live calculation for **Paid Annual**, **Sick / Medical**, and **Unpaid** leaves stored in Cloud Firestore.
+* **Leave Application Modal:** Automated duration calculation and conflict prevention.
+* **HR Review Queue:** 1-Click **Approve / Reject** with custom HR feedback comments.
+
+---
+
+### 3. 👤 **Dedicated Employee & HR Profiles**
+* **Personalized Dossier:** Every employee has their own individual profile with designation, department, work location, joining date, and emergency contacts.
+* **HR Directory:** Comprehensive workforce registry with live filtering and search by department or employee name.
+
+---
+
+### 4. ⏱️ **Real-Time Attendance Telemetry**
+* **Quick Clock In / Clock Out:** Live shift tracking with duration calculation and punch history (`Present`, `Half Day`, `Absent`, `Leave`).
+* **Weekly Presence Trends:** Interactive Area charts visualizing workforce activity over time.
+
+---
+
+### 5. 💵 **Payroll & Digital Payslips**
+* Comprehensive salary breakdown (Basic Salary, HRA, Allowances, Tax Withholdings, Net Take-Home Pay).
+* Printable & downloadable digital payslip view with verification stamps.
+
+---
+
+</div>
+
+<div align="center">
+
+## 🎯 **Demo Credentials**
 
 | Role | Email | Password |
-| :--- | :--- | :--- |
-| **HR / Admin** | `admin@dayflow.io` | `admin123` |
-| **Employee (Alex Rivera)** | `alex.rivera@dayflow.io` | `employee123` |
-| **Employee (Sarah Chen)** | `sarah.chen@dayflow.io` | `employee123` |
-| **Employee (Marcus Vance)** | `marcus.vance@dayflow.io` | `employee123` |
+| :---: | :---: | :---: |
+| 🛡️ **HR Admin (Sarah Jenkins)** | `admin@dayflow.com` | `Admin@123` |
+| 👤 **Employee (Alex Chen)** | `employee@dayflow.com` | `Employee@123` |
+| 🌐 **Google Sign-In** | *Any Google Account* | *Popup Auth* |
 
-*(You can also use the 1-click Demo buttons on the login screen!)*
-
----
-
-### Backend Setup (FastAPI)
-
-1. Navigate to the backend directory:
-   ```bash
-   cd backend
-   ```
-2. Create and activate a virtual environment:
-   ```bash
-   python -m venv .venv
-   # Windows:
-   .\.venv\Scripts\activate
-   # macOS/Linux:
-   source .venv/bin/activate
-   ```
-3. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-4. Seed the database with sample data:
-   ```bash
-   python seed.py
-   ```
-5. Start the FastAPI server:
-   ```bash
-   uvicorn app.main:app --reload --port 8000
-   ```
-   API Documentation: [http://localhost:8000/api/docs](http://localhost:8000/api/docs)
+*(You can also use the 1-Click Demo buttons on the login screen for instant access!)*
 
 ---
 
-### Frontend Setup (React + Vite + TypeScript)
+## 🛠️ **Quick Start & Local Setup**
 
-1. Navigate to the frontend directory:
-   ```bash
-   cd frontend
-   ```
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Start the development server:
-   ```bash
-   npm run dev
-   ```
-4. Open your browser at: `http://localhost:5173`
+</div>
+
+<div align="center">
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/Thilakeswaran/odoo-hackathon-2026.git
+cd odoo-hackathon-2026
+```
+
+### 2. Install Dependencies
+
+```bash
+cd frontend
+npm install
+```
+
+### 3. Configure Firebase Environment (`frontend/.env`)
+
+```env
+VITE_FIREBASE_API_KEY=AIzaSyAmOa-8MmZQhwlRMezNM3G5movTWoSpHaM
+VITE_FIREBASE_AUTH_DOMAIN=dayfloe-fe234.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=dayfloe-fe234
+VITE_FIREBASE_STORAGE_BUCKET=dayfloe-fe234.firebasestorage.app
+VITE_FIREBASE_MESSAGING_SENDER_ID=991828345165
+VITE_FIREBASE_APP_ID=1:991828345165:web:f92c7b357052396bb73704
+VITE_FIREBASE_MEASUREMENT_ID=G-5J7SFCN56X
+```
+
+### 4. Start the Application
+
+```bash
+npm run dev
+```
+
+Open **`http://localhost:5173`** in your browser.
 
 ---
 
-## 🌐 Production Deployment
+## 📂 **Project Architecture**
 
-- **Frontend Deployment (Vercel):**
-  - Framework Preset: `Vite`
-  - Build Command: `npm run build`
-  - Output Directory: `dist`
-  - Environment Variable: `VITE_API_URL=https://your-backend-api.onrender.com/api`
+```text
+├── .agents/skills/              # Firebase Agent Skills & Guides
+├── firestore.rules              # Cloud Firestore Security Rules
+├── firestore.indexes.json       # Cloud Firestore Composite Indexes
+├── firebase.json                # Firebase Hosting & Database Config
+├── frontend/
+│   ├── src/
+│   │   ├── config/firebase.ts   # Firebase App, Auth & Firestore Init
+│   │   ├── services/            # Firestore Realtime Services (Tasks, Leaves, Profiles)
+│   │   ├── context/AuthContext  # Firebase Auth Provider & State Sync
+│   │   ├── pages/               # Dashboards, TasksPage, Leaves, Profiles
+│   │   └── types/               # TypeScript Schema Definitions
+└── README.md                    # Project Documentation
+```
 
-- **Backend Deployment (Render / Railway):**
-  - Build Command: `pip install -r requirements.txt`
-  - Start Command: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
-  - Environment Variables:
-    - `DATABASE_URL`: `postgresql://user:password@neon.tech/dayflow` (or defaults to SQLite)
-    - `SECRET_KEY`: `your-production-jwt-secret`
-    - `GEMINI_API_KEY`: `your-gemini-api-key` (optional)
+---
 
-- **Database (Neon PostgreSQL):**
-  - Simply paste your Neon PostgreSQL connection string into `DATABASE_URL`. SQLAlchemy will automatically connect and create tables on startup.
+<p align="center">
+  <sub>Built with ❤️ for Odoo Hackathon 2026 • Powered by Google Firebase</sub>
+</p>
+
+</div>
