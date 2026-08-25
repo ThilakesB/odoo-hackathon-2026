@@ -108,13 +108,13 @@ npm install
 ### 3. Environment Configuration (`frontend/.env`)
 
 ```env
-VITE_FIREBASE_API_KEY=AIzaSyAmOa-8MmZQhwlRMezNM3G5movTWoSpHaM
-VITE_FIREBASE_AUTH_DOMAIN=dayfloe-fe234.firebaseapp.com
-VITE_FIREBASE_PROJECT_ID=dayfloe-fe234
-VITE_FIREBASE_STORAGE_BUCKET=dayfloe-fe234.firebasestorage.app
-VITE_FIREBASE_MESSAGING_SENDER_ID=991828345165
-VITE_FIREBASE_APP_ID=1:991828345165:web:f92c7b357052396bb73704
-VITE_FIREBASE_MEASUREMENT_ID=G-5J7SFCN56X
+VITE_FIREBASE_API_KEY=your_firebase_api_key_here
+VITE_FIREBASE_AUTH_DOMAIN=your_project_id.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_project_id.firebasestorage.app
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
+VITE_FIREBASE_APP_ID=your_firebase_app_id
+VITE_FIREBASE_MEASUREMENT_ID=your_measurement_id
 ```
 
 ### 4. Development Server Execution
